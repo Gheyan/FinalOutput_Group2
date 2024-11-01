@@ -5,3 +5,7 @@ plotly
 scikit-learn
 numpy
 matplotlib
+seaborn
+os
+io
+sys
