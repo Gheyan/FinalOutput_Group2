@@ -2,5 +2,5 @@ streamlit
 pandas
 altair
 plotly
-sklearn
+scikit-learn
 numpy
