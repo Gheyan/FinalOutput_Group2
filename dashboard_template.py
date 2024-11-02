@@ -152,8 +152,6 @@ def Region_Distribution():
 
 
 
-
-
 #######################
 
 # Pages
@@ -280,11 +278,127 @@ elif st.session_state.page_selection == "data_cleaning":
 
     # Your content for the DATA CLEANING / PREPROCESSING page goes here
 
+
+    #Data Cleaning and Pre-processing for Genre & Global Sales (K-Means Clustering Model)
+    st.subheader('Genre & Global Sales (K-Means Clustering Model)')
+    data = {'Genre': dataset['Genre'],'Global_Sales': dataset['Global_Sales']}
+    df_data_genreAndGlobal = pd.DataFrame(data)
+    st.dataframe(df_data_genreAndGlobal, use_container_width=True,hide_index=True)
+    st.markdown('We have seperated two distinct columns from the main dataset that will be used specifically for training a K-means clustering model to determine clusters suited for Genre and Global Sales.')
+
+    # Check for null values in 'Genre' and 'Global_Sales' columns
+    null_counts = df_data_genreAndGlobal.isnull().sum()
+    if null_counts.any():
+        st.warning(f"Null values found:\n{null_counts[null_counts > 0]}")
+    else:
+        st.success("No null values found in the selected columns.")
+
+    st.markdown('Using the `.isnull().sum()` in our specific chunk of the dataset we will check if there are any null values that needs to be processed. Since no null values are found no extra processing in terms of removing or reprocessing the missing values.')
+
+    label_encoder = LabelEncoder()
+    df_data_genreAndGlobal['Encoded_Genre'] = label_encoder.fit_transform(df_data_genreAndGlobal['Genre'])
+
+    display_data = df_data_genreAndGlobal[['Genre', 'Encoded_Genre']]
+    st.subheader('Genre and Converted Label Table')
+    st.dataframe(display_data, use_container_width=True)
+
+    st.markdown('Now we converted the values of genre column to numerical values using `LabelEncoder`. The Encoded_Genre column can now be used and processed by our unsupervised training model.')
+
+    distinct_labels = label_encoder.classes_  
+    encoded_labels = range(len(distinct_labels)) 
+
+    # Create a DataFrame for display
+    label_mapping = pd.DataFrame({
+        'Genre': distinct_labels,
+        'Encoded_Genre': encoded_labels
+        
+    })
+
+    # Display the distinct labels and their corresponding genres
+    st.subheader('Distinct Encoded Labels and Corresponding Genres')
+    st.dataframe(label_mapping, use_container_width=True, hide_index=True)
+
+    st.markdown('This table above shows the different distinct genres that are present within the dataset and their corresponding encoded values after being processed.')
+
+    
+
+
+
+
+
+
 # Machine Learning Page
 elif st.session_state.page_selection == "machine_learning":
     st.header("🤖 Machine Learning")
 
     # Your content for the MACHINE LEARNING page goes here
+
+    ######################################################################
+    #Information for the Genre & Global Sales (K-Means Clustering Model)
+    data = {'Genre': dataset['Genre'],'Global_Sales': dataset['Global_Sales']}
+    df_data_genreAndGlobal = pd.DataFrame(data)
+    label_encoder = LabelEncoder()
+    df_data_genreAndGlobal['Encoded_Genre'] = label_encoder.fit_transform(df_data_genreAndGlobal['Genre'])    
+
+    def elbow_graph():
+        inertia = []
+        K_range = range(1, 10)
+        for k in K_range:
+            kmeans = KMeans(n_clusters=k, random_state=0, n_init=10)  # n_init=10 for 10 runs with different centroid seeds
+            kmeans.fit(df_data_genreAndGlobal[['Encoded_Genre', 'Global_Sales']])
+            inertia.append(kmeans.inertia_)
+
+        # Elbow graph
+        plt.figure(figsize=(8, 5))
+        plt.plot(K_range, inertia, marker='o')
+        plt.title('Elbow Method for Optimal Number of Clusters')
+        plt.xlabel('Number of clusters (k)')
+        plt.ylabel('Inertia (Sum of Squared Distances)')
+        plt.grid(True)
+
+        st.pyplot(plt)
+        plt.clf()
+
+    def kmeans_clustering():
+        best_k = 3  # Set based on elbow graph
+        kmeans = KMeans(n_clusters=best_k, random_state=0, n_init=10)  # Run clustering 10 times
+        df_data_genreAndGlobal['Cluster'] = kmeans.fit_predict(df_data_genreAndGlobal[['Encoded_Genre', 'Global_Sales']])
+
+        plt.figure(figsize=(11, 7.85))
+        plt.scatter(df_data_genreAndGlobal['Global_Sales'], df_data_genreAndGlobal['Encoded_Genre'], c=df_data_genreAndGlobal['Cluster'], cmap='viridis', s=100)
+        plt.title(f'KMeans Clustering of Global Sales and Genre (k={best_k}) with Recentroiding (10 runs)')
+        plt.xlabel('Global Sales (in millions)')
+        plt.ylabel('Genre')
+        plt.colorbar(label='Cluster')
+
+        # Labels
+        genres = label_encoder.classes_
+        labels = [f'{i} = {genre}' for i, genre in enumerate(genres)]
+        handles = [plt.Line2D([0], [0], color='none', label=label) for label in labels]
+        plt.legend(handles=handles, title='Genres', bbox_to_anchor=(1.20, 1), loc='upper left')
+        plt.grid(True)
+        
+        st.pyplot(plt)
+        plt.clf()
+
+    
+    display_data = df_data_genreAndGlobal[['Genre', 'Encoded_Genre']]
+    st.subheader('Genre & Global Sales (K-Means Clustering Model)')
+
+    cols = st.columns((1,1), gap='medium')
+
+    with cols[0]:
+        st.markdown('##### Elbow Graph for the Model')
+        elbow_graph()
+
+        st.markdown('This elbow graph presents us the appropriate amount of clusters that can be used when on our specified data to produce an outcome that can be more easily analuzyzed and process. Considering the graph above the elbow point wherein the intertia of the graph slumps is seen at the 3 mark, which indicated that using 3 clusters would be the most appropriate number of clusters.')
+
+    with cols[1]:
+        st.markdown('##### Clustered Global Sales and Genre Model')
+        kmeans_clustering()
+
+        st.markdown('Cluster 0 (Purple) consists of games with low sales, generally below 20 million, spread across less popular genres like Simulation, Sports, and Strategy. Cluster 1 (Cyan) includes low-sales games, also below 20 million, primarily in Action, Adventure, and Fighting genres. Cluster 2 (Yellow) contains games with higher low sales, above 20 million, mainly in popular genres like Platform, Racing, Shooter, and Simulation.')
+    
 
 # Prediction Page
 elif st.session_state.page_selection == "prediction":
