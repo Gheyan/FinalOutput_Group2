@@ -47,10 +47,10 @@ def set_page_selection(page):
 with st.sidebar:
 
     # Sidebar Title (Change this with your project's title)
-    st.title('Dashboard Template')
+    st.title('Video Game Sales')
 
     # Page Button Navigation
-    st.subheader("Pages")
+    st.subheader("Pages: ")
 
     if st.button("About", use_container_width=True, on_click=set_page_selection, args=('about',)):
         st.session_state.page_selection = 'about'
@@ -74,8 +74,8 @@ with st.sidebar:
         st.session_state.page_selection = "conclusion"
 
     # Project Members
-    st.subheader("Members")
-    st.markdown("1. Elon Musk\n2. Jeff Bezos\n3. Sam Altman\n4. Mark Zuckerberg")
+    st.subheader("Members: ")
+    st.markdown("1. Aleah Balagao\n2. Sean Cabantog\n3. John Garina \n4. Felipe Panugan III\n5. Gian Mateo")
 
 #######################
 # Data
@@ -92,6 +92,20 @@ if st.session_state.page_selection == "about":
     st.header("ℹ️ About")
 
     # Your content for the ABOUT page goes here
+    st.markdown(""" 
+
+    A Streamlit web application that performs **Exploratory Data Analysis (EDA)**, **Data Preprocessing**, as well as **Unsupervised and Supervised Machine Learning** to .
+
+    #### Pages
+    1. `Dataset` - Provides a brief description of the Video Game Sales data set that would mainly be used within the whole dashboard.
+    2. `EDA` - Exploratory Data Analysis of the Video Game Sales dataset. This portion of the dashboard mainly highlights the different relationships between the various columns present within the dataset, providing multiple insights by the use of various graphs as visual representations of the said relationships.
+    3. `Data Cleaning / Pre-processing` - 
+    4. `Machine Learning` - 
+    5. `Prediction` - 
+    6. `Conclusion` - Summary of the all the insights gained and observations from the EDA and model training.
+
+
+    """)
 
 # Dataset Page
 elif st.session_state.page_selection == "dataset":
