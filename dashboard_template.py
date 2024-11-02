@@ -72,16 +72,87 @@ with st.sidebar:
 
     if st.button("Conclusion", use_container_width=True, on_click=set_page_selection, args=('conclusion',)):
         st.session_state.page_selection = "conclusion"
-
+    
     # Project Members
     st.subheader("Members: ")
     st.markdown("1. Aleah Balagao\n2. Sean Cabantog\n3. John Garina \n4. Felipe Panugan III\n5. Gian Mateo")
+
+    # Project Details
+    st.subheader("Abstract")
+    st.markdown("A Streamlit dashboard highlighting the results of a training three models using the Video Game Sales dataset from Kaggle.")
+    st.markdown("📊 [Dataset](https://www.kaggle.com/datasets/gregorut/videogamesales/data)")
+    st.markdown("📗 [Google Colab Notebook](https://colab.research.google.com/drive/1PinmgyIyVgvNG0V0cNRMxhJbwuC02iPe?usp=sharing)")
+    st.markdown("🐙 [GitHub Repository](https://github.com/Gheyan/FinalOutput_Group2.git)")
+    
+
+    
 
 #######################
 # Data
 
 # Load data
 dataset = pd.read_csv("data/vgsales.csv")
+
+#######################
+
+# Plots
+
+def Platform_Distribution():
+    platform_counts = dataset['Platform'].value_counts()
+    plt.figure(figsize=(10, 6))
+    plt.bar(platform_counts.index, platform_counts.values, color='skyblue')
+    plt.xlabel('Platform')
+    plt.ylabel('Games Published')
+    plt.title('Platform Distribution')
+    plt.xticks(rotation=90)
+    plt.tight_layout()
+
+    st.pyplot(plt)
+    plt.clf()
+
+def Publisher_Distribution():
+    Publisher_counts = dataset['Publisher'].value_counts(dropna=True).head(10)
+    plt.figure(figsize=(10, 6))
+    plt.bar(Publisher_counts.index, Publisher_counts.values, color='skyblue')
+    plt.xlabel('Publisher')
+    plt.ylabel('Games Published')
+    plt.title('Top 10 Publishers Distribution')
+    plt.xticks(rotation=90)
+    plt.tight_layout()
+    
+
+    st.pyplot(plt)
+    plt.clf()
+
+def Genre_Distribution():
+    genre_counts = dataset['Genre'].value_counts()
+    plt.figure(figsize=(10, 8))
+    plt.pie(genre_counts, labels=genre_counts.index, autopct='%1.1f%%', startangle=140, colors=plt.cm.Paired.colors)
+    plt.title('Distribution of Video Game Genres')
+    plt.axis('equal')
+    
+    st.pyplot(plt)
+    plt.clf()
+
+def Region_Distribution():
+  total_na_sales = dataset['NA_Sales'].sum()
+  total_eu_sales = dataset['EU_Sales'].sum()
+  total_jp_sales = dataset['JP_Sales'].sum()
+  total_other_sales = dataset['Other_Sales'].sum()
+  sales_totals = [total_na_sales, total_eu_sales, total_jp_sales, total_other_sales]
+  sales_labels = ['NA Sales', 'EU Sales', 'JP Sales', 'Other Sales']
+  plt.figure(figsize=(10, 8))
+  plt.pie(sales_totals, labels=sales_labels, autopct='%1.1f%%', startangle=90)
+  plt.axis('equal')
+  plt.title('Global Sales Distribution by Region')
+  
+  st.pyplot(plt)
+  plt.clf()
+
+
+
+
+
 
 #######################
 
@@ -159,27 +230,49 @@ elif st.session_state.page_selection == "dataset":
     buffer = io.StringIO()
     dataset.info(buf=buffer)
     info_output = buffer.getvalue()
-    st.header("Dataset Information")
+    st.subheader("Dataset Information")
     st.text(info_output)
+
+
+    st.markdown("""
+    The information presented directly above shows the different columns that are present within the dataset, while also highlighting the type of data that each of them contains. The data types present within the whole data set are floats, integers, and objects (considered as strings).
+    
+    """)
 
 # EDA Page
 elif st.session_state.page_selection == "eda":
     st.header("📈 Exploratory Data Analysis (EDA)")
 
-
-    col = st.columns((1.5, 4.5, 2), gap='medium')
-
     # Your content for the EDA page goes here
+   
+
+    col = st.columns((1,1), gap='medium')
+
 
     with col[0]:
-        st.markdown('#### Graphs Column 1')
+        st.markdown('#### Platform Distribution Chart')
+        Platform_Distribution();
+        st.markdown('Within the chart above, it shows the different types of platforms that are present within the dataset, in which a total of 31 distinct platforms where identified, and within that distinction the platform with the most games attributed to it is the Nintendo DS with 2163 ganes published.')
 
+        st.markdown('#### Genre Distribution Chart')
+        Genre_Distribution();
+        st.markdown('Within the contents of the genre distribution chart 12 distinct genres where identified, these genres describe and categorize the multiple games present within the dataset. In which the most common genre present within the dataset is Action, with 20% of the data set being under this genre.')
+        
 
     with col[1]:
-        st.markdown('#### Graphs Column 2')
+        st.markdown('#### Publisher Distribution Chart')
+        Publisher_Distribution();
+        st.markdown('The chart above present the top 10 publishers within the dataset, sorted primarily by the most games published. In total we have identified 578 distinct publishers within the dataset, and ranking top above all of these is the publisher Electronic Arts with 1351 games published.')
+
+        st.markdown('#### Region Distribution Chart')
+        Region_Distribution();
+        st.markdown('Presented above is the region distribution chart, in which it outlines the division of all global sales into specific regions. Within all the regions present the North America regions by far has the most marketshare with it encompassing 49.3% of all global sales.')
+
+    
         
-    with col[2]:
-        st.markdown('#### Graphs Column 3')
+
+
+    
 
 # Data Cleaning Page
 elif st.session_state.page_selection == "data_cleaning":
