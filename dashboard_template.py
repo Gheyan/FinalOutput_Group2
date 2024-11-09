@@ -320,8 +320,51 @@ elif st.session_state.page_selection == "data_cleaning":
     st.markdown('This table above shows the different distinct genres that are present within the dataset and their corresponding encoded values after being processed.')
 
     
+    st.divider()
 
+    #Data Cleaning and Pre-processing for Regional Sales and Global Sales (Linear Regression Model)
+    st.subheader('Regional Sales and Global Sales (Linear Regression Model)')
+    LinearRegressiondata = {
+    'NA_Sales': dataset['NA_Sales'],
+    'EU_Sales': dataset['EU_Sales'],
+    'JP_Sales': dataset['JP_Sales'],
+    'Other_Sales': dataset['Other_Sales'],
+    'Global_Sales': dataset['Global_Sales']
+    }
 
+    df_data_Linear = pd.DataFrame(LinearRegressiondata)
+    st.dataframe(df_data_Linear, use_container_width=True,hide_index=True)
+    st.markdown('We have seperated five distinct columns from the main dataset that will be used specifically for training a Linear Regression model to determine the relationship of the different regions and Global Sales.In addition to the information present all values are in the millions in that (1 is equivalent to 1,000,000 sales)')
+
+    # Check for null values in 'Genre' and 'Global_Sales' columns
+    null_counts = df_data_Linear.isnull().sum()
+    if null_counts.any():
+        st.warning(f"Null values found:\n{null_counts[null_counts > 0]}")
+    else:
+        st.success("No null values found in the selected columns.")
+
+    st.markdown('Using the `.isnull().sum()` in our specific chunk of the dataset we will check if there are any null values that needs to be processed. Since no null values are found no extra processing in terms of removing or reprocessing the missing values.')
+    
+
+    st.subheader('Splitting the Data into X (independent variable), and y (Dependent variable)')
+    st.code("""
+    regions = ['NA_Sales', 'EU_Sales', 'JP_Sales', 'Other_Sales']
+
+    plt.figure(figsize=(12, 10))
+    for i, region in enumerate(regions):
+
+        X = sales_data[[region]]  # Independent variable (region)
+        y = sales_data['Global_Sales']  # Dependent variable (Global_Sales)
+
+    """)
+
+    X_Linear = df_data_Linear[['NA_Sales', 'EU_Sales', 'JP_Sales', 'Other_Sales']]  # Independent variables (regional sales)
+    y_Linear= df_data_Linear['Global_Sales']
+
+    st.subheader('X (independent variable)')
+    st.dataframe(X_Linear, use_container_width=True,hide_index=True)
+    st.subheader('y (dependent variable)')
+    st.dataframe(y_Linear, use_container_width=True,hide_index=True)
 
 
 
@@ -413,15 +456,6 @@ elif st.session_state.page_selection == "machine_learning":
             inertia.append(kmeans.inertia_)
     """)
 
-
-    st.markdown('#### Clustered Global Sales and Genre Model')
-    st.markdown('Cluster 0 (Purple) consists of games with low sales, generally below 20 million, spread across less popular genres like Simulation, Sports, and Strategy. Cluster 1 (Cyan) includes low-sales games, also below 20 million, primarily in Action, Adventure, and Fighting genres. Cluster 2 (Yellow) contains games with higher low sales, above 20 million, mainly in popular genres like Platform, Racing, Shooter, and Simulation.')
-    cols_1 = st.columns((1,2,1), gap='medium')
-
-    with cols_1[1]:
-        kmeans_clustering()
-    
-
     st.markdown('#### Clustering the Model')
     st.code(""" 
     best_k = 3  # Set based on elbow graph
@@ -430,7 +464,95 @@ elif st.session_state.page_selection == "machine_learning":
 
     """)
 
-        
+    st.markdown('#### Clustered Global Sales and Genre Model')
+    st.markdown('Cluster 0 (Purple) consists of games with low sales, generally below 20 million, spread across less popular genres like Simulation, Sports, and Strategy. Cluster 1 (Cyan) includes low-sales games, also below 20 million, primarily in Action, Adventure, and Fighting genres. Cluster 2 (Yellow) contains games with higher low sales, above 20 million, mainly in popular genres like Platform, Racing, Shooter, and Simulation.')
+    cols_1 = st.columns((1,2,1), gap='medium')
+
+    with cols_1[1]:
+        kmeans_clustering()
+
+    st.divider()
+
+    LinearRegressiondata = {
+    'NA_Sales': dataset['NA_Sales'],
+    'EU_Sales': dataset['EU_Sales'],
+    'JP_Sales': dataset['JP_Sales'],
+    'Other_Sales': dataset['Other_Sales'],
+    'Global_Sales': dataset['Global_Sales']
+    }
+
+    df_data_Linear = pd.DataFrame(LinearRegressiondata)
+
+    def linear_regression():
+        sales_columns = ['NA_Sales', 'EU_Sales', 'JP_Sales', 'Other_Sales', 'Global_Sales']
+
+        regions = ['NA_Sales', 'EU_Sales', 'JP_Sales', 'Other_Sales']
+
+        plt.figure(figsize=(12, 10))
+        for i, region in enumerate(regions):
+
+            X = df_data_Linear[[region]]  # Independent variable (region)
+            y = df_data_Linear['Global_Sales']  # Dependent variable (Global_Sales)
+
+            model = LinearRegression()
+            model.fit(X, y)
+            y_pred = model.predict(X)
+            r2_score = model.score(X, y)
+
+            plt.subplot(2, 2, i + 1)
+            plt.scatter(X, y, color='blue', label=f'{region} vs Global_Sales')
+            plt.plot(X, y_pred, color='red', linewidth=2, label='Regression Line')
+            plt.title(f'{region} vs Global_Sales\nR² = {r2_score:.4f}')
+            plt.xlabel(f'{region}')
+            plt.ylabel('Global_Sales')
+            plt.legend()
+
+        plt.tight_layout()
+
+        st.pyplot(plt)
+        plt.clf()
+
+
+
+    st.subheader('Regional Sales and Global Sales (Linear Regression Model)')
+    st.markdown("""
+                
+    A statistical technique called linear regression analysis is used to represent the relationship between one or more independent variables—which are utilized for prediction—and a dependent variable, which we hope to forecast. Linear regression calculates the impact of changes in the independent variables on the dependent variable by fitting a straight line through the data points.
+                 
+    `Reference:` https://www.ibm.com/topics/linear-regression
+                
+    """)
+
+    st.subheader('Training the Model based on the dependent and independent variables')
+    st.code("""
+    for i, region in enumerate(regions):
+
+            X = df_data_Linear[[region]]  # Independent variable (region)
+            y = df_data_Linear['Global_Sales']  # Dependent variable (Global_Sales)
+
+            model = LinearRegression()
+            model.fit(X, y)
+            y_pred = model.predict(X)
+            r2_score = model.score(X, y)
+
+    """)
+
+    st.subheader('Graphed Model')
+
+    st.markdown("""
+                
+    The R^2 values of each of the graphs represent how well each region correlates to the Global_Sales, as such the strongest correlation to Global_Sales which is NA_Sales may mean that if games are to be sold well in this region that might also be the case globally. Thus properly focusing on regions like this may impact the potential of maximizing the sales of a video game globally.
+
+    """)
+    cols_2 = st.columns((1,5,1), gap='medium')
+    with cols_2[1]:
+        linear_regression()
+
+
+
+
+   
+
     
 
 # Prediction Page
