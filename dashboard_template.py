@@ -317,7 +317,6 @@ elif st.session_state.page_selection == "data_cleaning":
     # Display the distinct labels and their corresponding genres
     st.subheader('Distinct Encoded Labels and Corresponding Genres')
     st.dataframe(label_mapping, use_container_width=True, hide_index=True)
-
     st.markdown('This table above shows the different distinct genres that are present within the dataset and their corresponding encoded values after being processed.')
 
     
@@ -384,20 +383,54 @@ elif st.session_state.page_selection == "machine_learning":
     
     display_data = df_data_genreAndGlobal[['Genre', 'Encoded_Genre']]
     st.subheader('Genre & Global Sales (K-Means Clustering Model)')
+    st.markdown("""
+                
+    K-Means Clustering is an unsupervised machine learning approach that uses similarities in the data to organize unlabeled data into discrete clusters. In order to effectively uncover hidden patterns or relationships without predetermined labels, the method iteratively assigns data points to a number of defined clusters (K) and adjusts the cluster centroids to minimize variance within each group. 
+                 
+    `Reference:` https://www.geeksforgeeks.org/k-means-clustering-introduction/
+                
+    """)
 
-    cols = st.columns((1,1), gap='medium')
+    st.markdown('#### Elbow Graph for the Model')
+    st.markdown('Elbow graphs presents us the appropriate amount of clusters that can be used when on our specified data to produce an outcome that can be more easily analuzyzed and process. Considering the graph below, the elbow point wherein the intertia of the graph slumps is seen at the 3 mark, which indicated that using 3 clusters would be the most appropriate number of clusters.')
+    
 
-    with cols[0]:
-        st.markdown('##### Elbow Graph for the Model')
-        elbow_graph()
-
-        st.markdown('This elbow graph presents us the appropriate amount of clusters that can be used when on our specified data to produce an outcome that can be more easily analuzyzed and process. Considering the graph above the elbow point wherein the intertia of the graph slumps is seen at the 3 mark, which indicated that using 3 clusters would be the most appropriate number of clusters.')
-
+    cols = st.columns((1,2,1), gap='medium')
     with cols[1]:
-        st.markdown('##### Clustered Global Sales and Genre Model')
-        kmeans_clustering()
+        elbow_graph()
+    
 
-        st.markdown('Cluster 0 (Purple) consists of games with low sales, generally below 20 million, spread across less popular genres like Simulation, Sports, and Strategy. Cluster 1 (Cyan) includes low-sales games, also below 20 million, primarily in Action, Adventure, and Fighting genres. Cluster 2 (Yellow) contains games with higher low sales, above 20 million, mainly in popular genres like Platform, Racing, Shooter, and Simulation.')
+    st.markdown(""" 
+    #### Elbow Graph Intertia determination
+    """)
+    st.code("""
+    #determines the intertia for the graph using 10 runs of centroid seeds
+    inertia = []
+        K_range = range(1, 10)
+        for k in K_range:
+            kmeans = KMeans(n_clusters=k, random_state=0, n_init=10) 
+            kmeans.fit(df_data_genreAndGlobal[['Encoded_Genre', 'Global_Sales']])
+            inertia.append(kmeans.inertia_)
+    """)
+
+
+    st.markdown('#### Clustered Global Sales and Genre Model')
+    st.markdown('Cluster 0 (Purple) consists of games with low sales, generally below 20 million, spread across less popular genres like Simulation, Sports, and Strategy. Cluster 1 (Cyan) includes low-sales games, also below 20 million, primarily in Action, Adventure, and Fighting genres. Cluster 2 (Yellow) contains games with higher low sales, above 20 million, mainly in popular genres like Platform, Racing, Shooter, and Simulation.')
+    cols_1 = st.columns((1,2,1), gap='medium')
+
+    with cols_1[1]:
+        kmeans_clustering()
+    
+
+    st.markdown('#### Clustering the Model')
+    st.code(""" 
+    best_k = 3  # Set based on elbow graph
+        kmeans = KMeans(n_clusters=best_k, random_state=0, n_init=10)  # Run clustering 10 times
+        df_data_genreAndGlobal['Cluster'] = kmeans.fit_predict(df_data_genreAndGlobal[['Encoded_Genre', 'Global_Sales']])
+
+    """)
+
+        
     
 
 # Prediction Page
