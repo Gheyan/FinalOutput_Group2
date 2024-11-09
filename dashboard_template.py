@@ -483,34 +483,7 @@ elif st.session_state.page_selection == "machine_learning":
 
     df_data_Linear = pd.DataFrame(LinearRegressiondata)
 
-    def linear_regression():
-        sales_columns = ['NA_Sales', 'EU_Sales', 'JP_Sales', 'Other_Sales', 'Global_Sales']
-
-        regions = ['NA_Sales', 'EU_Sales', 'JP_Sales', 'Other_Sales']
-
-        plt.figure(figsize=(12, 10))
-        for i, region in enumerate(regions):
-
-            X = df_data_Linear[[region]]  # Independent variable (region)
-            y = df_data_Linear['Global_Sales']  # Dependent variable (Global_Sales)
-
-            model = LinearRegression()
-            model.fit(X, y)
-            y_pred = model.predict(X)
-            r2_score = model.score(X, y)
-
-            plt.subplot(2, 2, i + 1)
-            plt.scatter(X, y, color='blue', label=f'{region} vs Global_Sales')
-            plt.plot(X, y_pred, color='red', linewidth=2, label='Regression Line')
-            plt.title(f'{region} vs Global_Sales\nR² = {r2_score:.4f}')
-            plt.xlabel(f'{region}')
-            plt.ylabel('Global_Sales')
-            plt.legend()
-
-        plt.tight_layout()
-
-        st.pyplot(plt)
-        plt.clf()
+    
 
 
 
@@ -546,7 +519,33 @@ elif st.session_state.page_selection == "machine_learning":
     """)
     cols_2 = st.columns((1,5,1), gap='medium')
     with cols_2[1]:
-        linear_regression()
+        sales_columns = ['NA_Sales', 'EU_Sales', 'JP_Sales', 'Other_Sales', 'Global_Sales']
+
+        regions = ['NA_Sales', 'EU_Sales', 'JP_Sales', 'Other_Sales']
+
+        plt.figure(figsize=(12, 10))
+        for i, region in enumerate(regions):
+
+            X = df_data_Linear[[region]]  # Independent variable (region)
+            y = df_data_Linear['Global_Sales']  # Dependent variable (Global_Sales)
+
+            model = LinearRegression()
+            model.fit(X, y)
+            y_pred = model.predict(X)
+            r2_score = model.score(X, y)
+
+            plt.subplot(2, 2, i + 1)
+            plt.scatter(X, y, color='blue', label=f'{region} vs Global_Sales')
+            plt.plot(X, y_pred, color='red', linewidth=2, label='Regression Line')
+            plt.title(f'{region} vs Global_Sales\nR² = {r2_score:.4f}')
+            plt.xlabel(f'{region}')
+            plt.ylabel('Global_Sales')
+            plt.legend()
+
+        plt.tight_layout()
+
+        st.pyplot(plt)
+        plt.clf()
 
 
 
@@ -560,6 +559,48 @@ elif st.session_state.page_selection == "prediction":
     st.header("👀 Prediction")
 
     # Your content for the PREDICTION page goes here
+    LinearRegressiondata = {
+    'NA_Sales': dataset['NA_Sales'],
+    'EU_Sales': dataset['EU_Sales'],
+    'JP_Sales': dataset['JP_Sales'],
+    'Other_Sales': dataset['Other_Sales'],
+    'Global_Sales': dataset['Global_Sales']
+    }
+
+    df_data_Linear = pd.DataFrame(LinearRegressiondata)
+
+    def sales_prediction_app():
+        st.title("Global Sales Prediction")
+
+        # Text input for sales
+        sales_input = st.number_input(
+            "Enter sales in millions (e.g., 1 = 1 million sales):", min_value=0.0, step=0.1
+        )
+
+        # Dropdown for region selection
+        region = st.selectbox(
+            "Select the region:",
+            ['NA_Sales', 'EU_Sales', 'JP_Sales', 'Other_Sales']
+        )
+
+        # Create a Linear Regression model
+        model = LinearRegression()
+        
+        # Fit the model with the selected region
+        X = df_data_Linear[[region]]  # Independent variable (region)
+        y = df_data_Linear['Global_Sales']  # Dependent variable (Global Sales)
+        model.fit(X, y)
+
+        # Predict global sales based on the user input
+        input_data = [[sales_input]]
+        predicted_global_sales = model.predict(input_data)[0]  # Get the prediction
+
+        # Display the predicted global sales
+        st.subheader("Predicted Global Sales")
+        st.write(f"{predicted_global_sales:.2f} million units")
+
+    # Run the app
+    sales_prediction_app()
 
 # Conclusions Page
 elif st.session_state.page_selection == "conclusion":
