@@ -222,10 +222,11 @@ def other_sales_distribution():
     st.pyplot(plt)
     plt.clf()
 
-dataset['Global_Sales'] = pd.to_numeric(dataset['Global_Sales'], errors='coerce')
-df = dataset.dropna(subset=['Global_Sales'])
+
 
 def bar_graph1():
+    dataset['Global_Sales'] = pd.to_numeric(dataset['Global_Sales'], errors='coerce')
+    df = dataset.dropna(subset=['Global_Sales'])
     plt.figure(figsize=(12, 6))
     platform_sales = df.groupby('Platform')['Global_Sales'].sum().sort_values(ascending=False)
     platform_sales.plot(kind='bar', color='purple')
@@ -238,6 +239,8 @@ def bar_graph1():
     plt.clf()  # Clear figure after displaying
 
 def bar_graph2():
+    dataset['Global_Sales'] = pd.to_numeric(dataset['Global_Sales'], errors='coerce')
+    df = dataset.dropna(subset=['Global_Sales'])
     plt.figure(figsize=(12, 6))
     genre_sales = df.groupby('Genre')['Global_Sales'].sum().sort_values(ascending=False)
     genre_sales.plot(kind='bar', color='pink')
@@ -248,6 +251,33 @@ def bar_graph2():
     plt.tight_layout()
     st.pyplot(plt)
     plt.clf()  # Clear figure after displaying
+
+def heat_map():
+  dataset.dropna(subset=['Genre', 'Platform', 'Global_Sales'], inplace=True)
+  top_platforms = dataset['Platform'].value_counts().nlargest(10).index.tolist()
+  filtered_df = dataset[dataset['Platform'].isin(top_platforms)]
+  average_sales = filtered_df.groupby(['Genre', 'Platform'])['Global_Sales'].mean().reset_index()
+  pivot_table = average_sales.pivot(index='Genre', columns='Platform', values='Global_Sales')
+  plt.figure(figsize=(12, 10))
+  sns.heatmap(pivot_table, annot=True, cmap='YlGnBu')
+  plt.title('Average Global Sales by Genre in the Top 10 Platforms(1 = 1million)')
+  plt.xlabel('Platform')
+  plt.ylabel('Genre')
+  plt.show()
+  st.pyplot(plt)
+  plt.clf()
+
+def bar_chart():
+  top_platforms = dataset.groupby('Platform').sum()[['NA_Sales', 'EU_Sales', 'JP_Sales', 'Other_Sales']].sum(axis=1).nlargest(10).index
+  sales_by_region_platform = dataset[dataset['Platform'].isin(top_platforms)].groupby('Platform').sum()[['NA_Sales', 'EU_Sales', 'JP_Sales', 'Other_Sales']]
+  sales_by_region_platform.plot(kind='bar', stacked=True, figsize=(10, 6))
+  plt.title('Sales by Region and Platform (Top 10 Platforms)')
+  plt.xlabel('Platform')
+  plt.ylabel('Sales (in millions)')
+  plt.xticks(rotation=90)
+  plt.show()
+  st.pyplot(plt)
+  plt.clf()
 #Felipe
 
 
@@ -368,6 +398,11 @@ elif st.session_state.page_selection == "eda":
         bar_graph1();
         st.markdown("""
 PS2 stands as the highest-selling platform, followed by the X360 in second place and the PS3 in third. This ranking highlights a clear preference among consumers for these particular platforms, suggesting they hold the largest market share in terms of sales compared to other gaming platforms.""")
+        
+        st.markdown('### Platform Sales by Region Chart')
+        bar_chart();
+        st.markdown("""
+In Japan, gaming sales data indicate a strong preference for portable gaming, with a significant portion of sales coming from the Nintendo DS, a popular handheld device. In contrast, North American gamers tend to prefer more powerful console systems, as reflected in the top-selling platforms, which include the PlayStation 2 (PS2) and Xbox 360 (X360). European consumers also show a particular affinity for the PlayStation series, with the PS2 and PS3 leading in sales in this region. Similarly, in markets outside of Europe, Japan, and North America, the PS2 stands out as the most favored gaming platform, with sales surpassing those of other gaming systems in these areas.""")
         #Felipe
         
 
@@ -392,6 +427,10 @@ PS2 stands as the highest-selling platform, followed by the X360 in second place
         st.markdown('### Global Sales Genre Chart')
         bar_graph2();
         st.markdown("""Action games are the top-selling category, with sports games and shooter games sharing the second spot in terms of popularity. it suggests that action, sports, and shooter games are consistently favored by consumers, making them more likely to achieve higher sales compared to other genres. """)
+        
+        st.markdown('### Average Global Sales by Genre Chart')
+        heat_map();
+        st.markdown("""Certain combinations of platform and genre have a significant impact on game sales. The most popular combinations show that platform-based games on the Wii platform lead in average sales, reaching approximately 1.6 million units. Following closely, shooter games on the X360 platform achieve an average of 1.4 million units sold, while shooter games on the PS3 platform come in third with an average of 1.3 million units. On the other end of the spectrum, certain genre combinations on the PC platform report the lowest average sales. Puzzle games on the PC platform sell the least, averaging only 37,000 units, while fighting and platform genres on PC are similarly low, each averaging around 45,000 units. This data highlights a significant disparity in sales performance across different platform-genre combinations, with PC games generally underperforming compared to other platforms.""")
         #Felipe
 
     
