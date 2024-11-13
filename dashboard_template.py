@@ -148,8 +148,38 @@ def Region_Distribution():
   
   st.pyplot(plt)
   plt.clf()
+#Felipe
+def pie_chart():
+  genre_df = pd.read_csv(file_path)
+  genre_df = genre_df.drop(['Rank', 'Name', 'Platform', 'Year', 'Publisher'], axis=1)
+  genre_df = genre_df.groupby('Genre').sum()
 
 
+  regions = ['NA_Sales', 'EU_Sales', 'JP_Sales', 'Other_Sales']
+  region_names = ['NA Sales', 'EU Sales', 'JP Sales', 'Other Region Sales']
+
+  num_genres = len(genre_df)
+
+  cmap = plt.colormaps.get_cmap('tab20')
+  colors = cmap(np.linspace(0, 1, num_genres))
+  fig, axes = plt.subplots(1, 4, figsize=(18, 5))
+
+  for i, region in enumerate(regions):
+      ax = axes[i]
+      ax.pie(
+          genre_df[region],
+          labels=genre_df.index,
+          autopct='%1.1f%%',
+          startangle=90,
+          colors=colors,
+          pctdistance=0.85,
+          labeldistance=1.1
+      )
+      ax.set_title(f'{region_names[i]} Distribution by Genre')
+
+  plt.tight_layout()
+  plt.show()
+#Felipe
 
 
 #######################
@@ -255,6 +285,12 @@ elif st.session_state.page_selection == "eda":
         st.markdown('#### Genre Distribution Chart')
         Genre_Distribution();
         st.markdown('Within the contents of the genre distribution chart 12 distinct genres where identified, these genres describe and categorize the multiple games present within the dataset. In which the most common genre present within the dataset is Action, with 20% of the data set being under this genre.')
+        #Felipe
+        st.markdown('### North American Sales Linear Regression Chart')
+        pie_chart();
+        st.markdown('Hi world')
+
+        #Felipe
         
 
     with col[1]:
@@ -265,6 +301,14 @@ elif st.session_state.page_selection == "eda":
         st.markdown('#### Region Distribution Chart')
         Region_Distribution();
         st.markdown('Presented above is the region distribution chart, in which it outlines the division of all global sales into specific regions. Within all the regions present the North America regions by far has the most marketshare with it encompassing 49.3% of all global sales.')
+
+        #Felipe
+        st.markdown('### Japan Linear Regression Chart')
+        st.markdown('Hi world')
+
+        st.markdown('### Other Sales Linear Regression Chart')
+        st.markdown('Hi world')
+        #Felipe
 
     
         
@@ -399,7 +443,7 @@ elif st.session_state.page_selection == "machine_learning":
         plt.grid(True)
 
         st.pyplot(plt)
-        plt.clf()
+        plt.clf()# BALAGAO - EDA
 
     def kmeans_clustering():
         best_k = 3  # Set based on elbow graph
