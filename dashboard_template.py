@@ -297,9 +297,9 @@ if st.session_state.page_selection == "about":
     #### Pages
     1. `Dataset` - Provides a brief description of the Video Game Sales data set that would mainly be used within the whole dashboard.
     2. `EDA` - Exploratory Data Analysis of the Video Game Sales dataset. This portion of the dashboard mainly highlights the different relationships between the various columns present within the dataset, providing multiple insights by the use of various graphs as visual representations of the said relationships.
-    3. `Data Cleaning / Pre-processing` - 
-    4. `Machine Learning` - 
-    5. `Prediction` - 
+    3. `Data Cleaning / Pre-processing` - Various data cleaning and pre-processing were dont as to properly prepare the data before use. Techniques such as null checking and handling, and label encoding were the main things that were used within the dataset.
+    4. `Machine Learning` - Two models are currently present within the dashboard, which are a supervised model (linear regression) and unuspervised model (k-means clusering).
+    5. `Prediction` - Within this page, users can input specific values which can map into predictions of global sales for video games.
     6. `Conclusion` - Summary of the all the insights gained and observations from the EDA and model training.
 
 
@@ -774,3 +774,25 @@ elif st.session_state.page_selection == "conclusion":
     st.header("📝 Conclusion")
 
     # Your content for the CONCLUSION page goes here
+    st.markdown("""
+    ## This project aims to answer the following business questions:
+
+    *  ### How profitable is the gaming industry?
+        1. Based on a graph made to show a platform's sales performance in each region, it is evidently shown that video games are in demand, specifically, in North America.
+        2. Between 1980 and the early 2000s, video game sales saw modest yet steady growth, with few standout titles exceeding 20 million units. Sales peaked between 2005 and 2010, driven by blockbuster titles and popular consoles, with some games exceeding 60-80 million units globally. After 2010, there was a decline in top-tier sales, though moderate sales continued to provide steady revenue for most games.
+        3. Our findings show that PS2, as a platform, leads in sales, surpassing 1,200 units, with most sales in North America. X360 ranks second with nearly 1,000 sales, also dominated by North American purchases. PS3 follows in third place with sales between 800 and 1,000, split between Europe and North America, but still falling behind PS2 despite being a newer platform.
+
+    *  ### What factors can contribute to a game's success in sales?
+        1. Action, Shooter, and Sports genres dominate sales in both North America and Europe, with action games selling over 800 million units in North America. Japan, however, favors Role-Playing, Platform, and Puzzle genres, nearly matching North America in RPG sales. These universal genre trends suggest that targeting Action, Shooter, and Sports may drive success globally, while Role-Playing games are key for the Japanese market.
+        2. The insights we gained show that certain platform and genre combinations perform better in sales. The top three are the Platform genre on Wii (1.6 million), Shooter genre on X360 (1.4 million), and Shooter genre on PS3 (1.3 million). In contrast, the lowest sales are seen with the Puzzle genre on PC (37,000) and Fighting/Platform genres on PC, both averaging 45,000 sales.
+        3. In the clustering of genre and global sales, it has formed three clusters which are: 
+            - Cluster 0 (Purple) represents games with sales below 20 million, primarily in less popular genres like Simulation, Sports, and Strategy. 
+            - Cluster 1 (Cyan) also consists of low-sales games under 20 million, focused on Action, Adventure, and Fighting genres. 
+            - Cluster 2 (Yellow) features games with higher sales above 20 million, dominating popular genres like Platform, Racing, Shooter, and Simulation.
+
+    *  ### How can we maximize the sales of a video game?
+        1. It is possible to increase a video game's sales performance through platform and genre. Based on a graph made to compare between the two features, it accurately shows the popular and in-demand features sought out by buyers.
+        2. In a graph comparing the linear regression models of different regions in contribution to global sales, the R² values show how each region's sales correlate with global sales, with NA sales having the strongest correlation. This suggests that if a game sells well in North America, it is likely to succeed globally, making it a key region for maximizing video game sales.
+        3. JP sales show a preference for portable gaming, with high sales from the DS. NA sales highlight a preference for powerful consoles like the PS2 and X360. EU sales favor the PlayStation series, with top sales from the PS2 and PS3. In other regions, the PS2 is the most favored platform based on its higher sales compared to others.
+        4. Each region shows the genres that are observed as being the most preferred. Action and Sports games sell the best in NA, EU, and Other regions, but not as much in the JP region, where instead, Role-Playing games sell the best. Making Role-Playing games would therefore benefit from the most sales when marketed to the JP region, while Action games will fare better in the NA, EU, and Other region markets.
+    """)
