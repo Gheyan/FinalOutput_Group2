@@ -149,36 +149,105 @@ def Region_Distribution():
   st.pyplot(plt)
   plt.clf()
 #Felipe
-def pie_chart():
-  genre_df = pd.read_csv(file_path)
-  genre_df = genre_df.drop(['Rank', 'Name', 'Platform', 'Year', 'Publisher'], axis=1)
-  genre_df = genre_df.groupby('Genre').sum()
 
+def na_sales_distribution():
+    genre_df = dataset.groupby('Genre')['NA_Sales'].sum()  # Sum NA_Sales by genre
+    colors = plt.cm.tab20.colors[:len(genre_df)]
+    
+    plt.figure(figsize=(8, 6))
+    plt.pie(
+        genre_df,
+        labels=genre_df.index,
+        autopct='%1.1f%%',
+        startangle=90,
+        colors=colors,
+        pctdistance=0.85,
+        labeldistance=1.1
+    )
+    plt.title('NA Sales Distribution by Genre')
+    st.pyplot(plt)
+    plt.clf()
 
-  regions = ['NA_Sales', 'EU_Sales', 'JP_Sales', 'Other_Sales']
-  region_names = ['NA Sales', 'EU Sales', 'JP Sales', 'Other Region Sales']
+def eu_sales_distribution():
+    genre_df = dataset.groupby('Genre')['EU_Sales'].sum()  # Sum EU_Sales by genre
+    colors = plt.cm.tab20.colors[:len(genre_df)]
+    
+    plt.figure(figsize=(8, 6))
+    plt.pie(
+        genre_df,
+        labels=genre_df.index,
+        autopct='%1.1f%%',
+        startangle=90,
+        colors=colors,
+        pctdistance=0.85,
+        labeldistance=1.1
+    )
+    plt.title('EU Sales Distribution by Genre')
+    st.pyplot(plt)
+    plt.clf()
 
-  num_genres = len(genre_df)
+def jp_sales_distribution():
+    genre_df = dataset.groupby('Genre')['JP_Sales'].sum()  # Sum JP_Sales by genre
+    colors = plt.cm.tab20.colors[:len(genre_df)]
+    
+    plt.figure(figsize=(8, 6))
+    plt.pie(
+        genre_df,
+        labels=genre_df.index,
+        autopct='%1.1f%%',
+        startangle=90,
+        colors=colors,
+        pctdistance=0.85,
+        labeldistance=1.1
+    )
+    plt.title('JP Sales Distribution by Genre')
+    st.pyplot(plt)
+    plt.clf()
 
-  cmap = plt.colormaps.get_cmap('tab20')
-  colors = cmap(np.linspace(0, 1, num_genres))
-  fig, axes = plt.subplots(1, 4, figsize=(18, 5))
+def other_sales_distribution():
+    genre_df = dataset.groupby('Genre')['Other_Sales'].sum()  # Sum Other_Sales by genre
+    colors = plt.cm.tab20.colors[:len(genre_df)]
+    
+    plt.figure(figsize=(8, 6))
+    plt.pie(
+        genre_df,
+        labels=genre_df.index,
+        autopct='%1.1f%%',
+        startangle=90,
+        colors=colors,
+        pctdistance=0.85,
+        labeldistance=1.1
+    )
+    plt.title('Other Region Sales Distribution by Genre')
+    st.pyplot(plt)
+    plt.clf()
 
-  for i, region in enumerate(regions):
-      ax = axes[i]
-      ax.pie(
-          genre_df[region],
-          labels=genre_df.index,
-          autopct='%1.1f%%',
-          startangle=90,
-          colors=colors,
-          pctdistance=0.85,
-          labeldistance=1.1
-      )
-      ax.set_title(f'{region_names[i]} Distribution by Genre')
+dataset['Global_Sales'] = pd.to_numeric(dataset['Global_Sales'], errors='coerce')
+df = dataset.dropna(subset=['Global_Sales'])
 
-  plt.tight_layout()
-  plt.show()
+def bar_graph1():
+    plt.figure(figsize=(12, 6))
+    platform_sales = df.groupby('Platform')['Global_Sales'].sum().sort_values(ascending=False)
+    platform_sales.plot(kind='bar', color='purple')
+    plt.title('Total Global Sales by Platform')
+    plt.xlabel('Platform')
+    plt.ylabel('Global Sales (in Millions)')
+    plt.xticks(rotation=45, ha='right')
+    plt.tight_layout()
+    st.pyplot(plt)
+    plt.clf()  # Clear figure after displaying
+
+def bar_graph2():
+    plt.figure(figsize=(12, 6))
+    genre_sales = df.groupby('Genre')['Global_Sales'].sum().sort_values(ascending=False)
+    genre_sales.plot(kind='bar', color='pink')
+    plt.title('Total Global Sales by Genre')
+    plt.xlabel('Genre')
+    plt.ylabel('Global Sales (in Millions)')
+    plt.xticks(rotation=45, ha='right')
+    plt.tight_layout()
+    st.pyplot(plt)
+    plt.clf()  # Clear figure after displaying
 #Felipe
 
 
@@ -286,10 +355,19 @@ elif st.session_state.page_selection == "eda":
         Genre_Distribution();
         st.markdown('Within the contents of the genre distribution chart 12 distinct genres where identified, these genres describe and categorize the multiple games present within the dataset. In which the most common genre present within the dataset is Action, with 20% of the data set being under this genre.')
         #Felipe
-        st.markdown('### North American Sales Linear Regression Chart')
-        pie_chart();
-        st.markdown('Hi world')
+        st.markdown('### North American Sales Distribution Chart')
+        na_sales_distribution();
+        st.markdown("""Action is the best-selling genre in NA (North America). The Sports genre is the second-best selling genre in the region by a relatively small margin, followed closely by Shooter games.
+""")
 
+        st.markdown('### Europe Sales Distribution Chart')
+        eu_sales_distribution();
+        st.markdown("""Action is the best-selling genre in EU (Europe). The Sports genre is the second-best selling genre in the region by a relatively small margin, followed closely by Shooter games.""")
+
+        st.markdown('### Global Sales Platform Chart')
+        bar_graph1();
+        st.markdown("""
+PS2 stands as the highest-selling platform, followed by the X360 in second place and the PS3 in third. This ranking highlights a clear preference among consumers for these particular platforms, suggesting they hold the largest market share in terms of sales compared to other gaming platforms.""")
         #Felipe
         
 
@@ -303,11 +381,17 @@ elif st.session_state.page_selection == "eda":
         st.markdown('Presented above is the region distribution chart, in which it outlines the division of all global sales into specific regions. Within all the regions present the North America regions by far has the most marketshare with it encompassing 49.3% of all global sales.')
 
         #Felipe
-        st.markdown('### Japan Linear Regression Chart')
-        st.markdown('Hi world')
+        st.markdown('### Japan Sales Distribution Chart')
+        jp_sales_distribution();
+        st.markdown("""Role-PLaying is the best-selling genre in JP (Japan), outselling Action and Sports games by a wide margin. Shooter games also sell the least in this region.""")
 
-        st.markdown('### Other Sales Linear Regression Chart')
-        st.markdown('Hi world')
+        st.markdown('### Other Sales Distribution Chart')
+        other_sales_distribution();
+        st.markdown("""Action is the best-selling genre in other regions. The Shooter genre is the second-best selling genre in the region by a relatively small margin, followed closely by Shooter games.""")
+
+        st.markdown('### Global Sales Genre Chart')
+        bar_graph2();
+        st.markdown("""Action games are the top-selling category, with sports games and shooter games sharing the second spot in terms of popularity. it suggests that action, sports, and shooter games are consistently favored by consumers, making them more likely to achieve higher sales compared to other genres. """)
         #Felipe
 
     
