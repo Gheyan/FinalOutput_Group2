@@ -2,7 +2,7 @@
 
 A Streamlit web application that performs **Exploratory Data Analysis (EDA)**, **Data Preprocessing**, and **Supervised and Unsupervised Machine Learning** to predict global video game sales, and factors that can affect it using **Linear Regression Models** and **K-means Clustering Models**.
 
-![Main Page Screenshot](screenshots/IrisClassificationDashboard.webp)
+![Main Page Screenshot](screenshots/mainpage_ss.png)
 
 ### 🔗 Links:
 
