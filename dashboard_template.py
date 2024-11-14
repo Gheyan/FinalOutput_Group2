@@ -778,13 +778,14 @@ elif st.session_state.page_selection == "machine_learning":
     
         y_pred = model.predict(X_test)
     
-        # Ensure y_test and y_pred are flattened and check their shapes
+        # Ensure y_test and y_pred are flattened
         y_test = np.array(y_test).flatten()
         y_pred = np.array(y_pred).flatten()
-    
+
         print("y_test shape:", y_test.shape)
         print("y_pred shape:", y_pred.shape)
 
+        # Check for NaN or infinite values in predictions and actual values
         if np.any(np.isnan(y_pred)) or np.any(np.isnan(y_test)):
             print("NaN values found in predictions or test data.")
         if not np.isfinite(y_pred).all() or not np.isfinite(y_test).all():
@@ -802,8 +803,11 @@ elif st.session_state.page_selection == "machine_learning":
 
         # Visualization: Actual vs Predicted
         plt.figure(figsize=(10, 6))
-        plt.scatter(y_test, y_pred, alpha=0.7)
-        plt.plot([y.min(), y.max()], [y.min(), y.max()]) 
+        plt.scatter(y_test, y_pred, alpha=0.7, label='Predicted vs Actual')
+    
+        # Add a reference line
+        plt.plot([y_test.min(), y_test.max()], [y_test.min(), y_test.max()], color='red', linestyle='--', label='Perfect Prediction')
+    
         plt.xlabel('Actual Sales')
         plt.ylabel('Predicted Sales')
         plt.title('Actual vs Predicted Global Sales with Regression Line')
