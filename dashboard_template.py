@@ -752,6 +752,7 @@ elif st.session_state.page_selection == "machine_learning":
         plt.clf()
 
     # BALAGAO
+    # BALAGAO
     def linear_regression():
         df = pd.read_csv("data/vgsales.csv")
         df['Global_Sales'] = pd.to_numeric(df['Global_Sales'], errors='coerce')
@@ -760,26 +761,30 @@ elif st.session_state.page_selection == "machine_learning":
         X = df.drop(columns=['Global_Sales', 'Name'])
         X = pd.get_dummies(X, columns=['Genre', 'Platform', 'Publisher'], drop_first=True)
         y = df['Global_Sales']
-    
+
         if X.isnull().values.any() or not np.isfinite(X).all().all():
             print("Found NaN or infinite values in X.")
             X = X.fillna(0)  # Replace NaNs with 0 as a quick fix
         if y.isnull().values.any() or not np.isfinite(y).all():
             print("Found NaN or infinite values in y.")
             y = y.fillna(0)  # Replace NaNs with 0 for y as a quick fix
-    
+
         # Split data into training and testing sets
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-    
+
         # Initialize and train the Linear Regression model
         model = LinearRegression()
         model.fit(X_train, y_train)
 
-        # Predict on test data
+        # Predict 
         y_pred = model.predict(X_test)
 
         y_test = np.array(y_test)
         y_pred = np.array(y_pred)
+
+        if y_test.shape != y_pred.shape:
+            print(f"Shape mismatch: y_test shape = {y_test.shape}, y_pred shape = {y_pred.shape}")
+            y_pred = np.resize(y_pred, y_test.shape)  # Resize y_pred to match y_test shape if needed
 
         # Calculate metrics
         mse = mean_squared_error(y_test, y_pred)
@@ -796,8 +801,6 @@ elif st.session_state.page_selection == "machine_learning":
         plt.title('Actual vs Predicted Global Sales')
         plt.show()
 
-    st.header("🤖 Machine Learning - Linear Regression Analysis")
-    st.markdown("""This section analyzes the relationship between regional sales and global sales using a linear regression model.""")
     linear_regression()
    
 
