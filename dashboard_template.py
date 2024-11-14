@@ -425,6 +425,7 @@ elif st.session_state.page_selection == "eda":
         eu_sales_distribution();
         st.markdown("""Action is the best-selling genre in EU (Europe). The Sports genre is the second-best selling genre in the region by a relatively small margin, followed closely by Shooter games.""")
 
+        # BALAGAO - EDA 
         st.markdown('### Global Sales Platform Chart')
         bar_graph1();
         st.markdown("""
@@ -750,7 +751,42 @@ elif st.session_state.page_selection == "machine_learning":
         st.pyplot(plt)
         plt.clf()
 
+# BALAGAO - Machine Learning for Regression Model
+    st.subheader("K-Means Clustering Model on Genre & Global Sales")
+    label_encoder = LabelEncoder()
+    df_data_genreAndGlobal['Encoded_Genre'] = label_encoder.fit_transform(df_data_genreAndGlobal['Genre'])
+    
+    def elbow_graph():
+        inertia = []
+        K_range = range(1, 10)
+        for k in K_range:
+            kmeans = KMeans(n_clusters=k, random_state=0, n_init=10)
+            kmeans.fit(df_data_genreAndGlobal[['Encoded_Genre', 'Global_Sales']])
+            inertia.append(kmeans.inertia_)
+        
+        plt.plot(K_range, inertia, marker='o')
+        plt.xlabel('Number of clusters (k)')
+        plt.ylabel('Inertia')
+        st.pyplot(plt)
+    
+    elbow_graph()
 
+    # Linear Regression
+    st.subheader("Linear Regression Model on Regional Sales")
+    regions = ['NA_Sales', 'EU_Sales', 'JP_Sales', 'Other_Sales']
+    for region in regions:
+        X = df_data_Linear[[region]]
+        y = df_data_Linear['Global_Sales']
+        model = LinearRegression()
+        model.fit(X, y)
+        y_pred = model.predict(X)
+        
+        plt.scatter(X, y, label=region)
+        plt.plot(X, y_pred, color="red", linewidth=2)
+        plt.xlabel(region)
+        plt.ylabel("Global Sales")
+        plt.legend()
+        st.pyplot(plt)
 
 
    
