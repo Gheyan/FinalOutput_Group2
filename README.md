@@ -1,3 +1,15 @@
+#Contributors:
+
+*Gian Carlo L. Mateo -  Gheyan 
+
+*Aleah H. Balagao -  AHelbes 
+
+*Felipe M. Panugan III - NeoRedcraft 
+
+*Sean Chester Cabantog - sayorikeychains 
+
+*John Daniel D. Garina - Jd3218 
+
 # Video Game Sales Dashboard using Streamlit
 
 A Streamlit web application that performs **Exploratory Data Analysis (EDA)**, **Data Preprocessing**, and **Supervised and Unsupervised Machine Learning** to predict global video game sales, and factors that can affect it using **Linear Regression Models** and **K-means Clustering Models**.
