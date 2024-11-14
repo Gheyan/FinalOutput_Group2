@@ -804,6 +804,14 @@ elif st.session_state.page_selection == "machine_learning":
         plt.figure(figsize=(10, 6))
         plt.scatter(y_test, y_pred, alpha=0.7)
         plt.plot([y.min(), y.max()], [y.min(), y.max()]) 
+        plt.xlabel('Actual Sales')
+        plt.ylabel('Predicted Sales')
+        plt.title('Actual vs Predicted Global Sales with Regression Line')
+        plt.legend()
+        plt.grid()
+        plt.show()
+
+    linear_regression()
    
 
     
