@@ -752,40 +752,133 @@ elif st.session_state.page_selection == "machine_learning":
         plt.clf()
 
 # BALAGAO - Machine Learning for Regression Model
-    def linear_regression():
-        # reloading the dataset because lagi ako nagkakaerror here help
-        df = pd.read_csv("data/vgsales.csv")
-        df['Global_Sales'] = pd.to_numeric(df['Global_Sales'], errors='coerce')
-        
-        df.dropna(inplace=True)
+    df = pd.read_csv("data/vgsales.csv")
+    data = {'Genre': dataset['Genre'], 'Global_Sales': dataset['Global_Sales']}
+    df_data_genreAndGlobal = pd.DataFrame(data)
+    label_encoder = LabelEncoder()
+    df_data_genreAndGlobal['Encoded_Genre'] = label_encoder.fit_transform(df_data_genreAndGlobal['Genre'])    
 
-        X = df.drop(columns=['Global_Sales', 'Name'])
-        X = pd.get_dummies(X, columns=['Genre', 'Platform', 'Publisher'], drop_first=True)
-        global_sales = df['Global_Sales']
-        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+    # Define the elbow graph function for KMeans clustering
+    def elbow_graph():
+        inertia = []
+        K_range = range(1, 10)
+        for k in K_range:
+            kmeans = KMeans(n_clusters=k, random_state=0, n_init=10)
+            kmeans.fit(df_data_genreAndGlobal[['Encoded_Genre', 'Global_Sales']])
+            inertia.append(kmeans.inertia_)
 
-        model = LinearRegression()
-        model.fit(X_train, y_train)
-
-        y_pred = model.predict(X_test)
-
-        mse = mean_squared_error(y_test, y_pred)
-        r2 = r2_score(y_test, y_pred)
-
-        st.write("Mean Squared Error:", mse)
-        st.write("R-squared:", r2)
-
-        plt.figure(figsize=(10, 6))
-        plt.scatter(y_test, y_pred, alpha=0.7)
-        plt.plot([y.min(), y.max()], [y.min(), y.max()], 'k--', lw=2)
-        plt.xlabel('Actual Sales')
-        plt.ylabel('Predicted Sales')
-        plt.title('Actual vs Predicted Global Sales')
-
+        plt.figure(figsize=(8, 5))
+        plt.plot(K_range, inertia, marker='o')
+        plt.title('Elbow Method for Optimal Number of Clusters')
+        plt.xlabel('Number of clusters (k)')
+        plt.ylabel('Inertia (Sum of Squared Distances)')
+        plt.grid(True)
         st.pyplot(plt)
+        plt.clf()
 
-    linear_regression()
+    # KMeans clustering
+    def kmeans_clustering():
+        best_k = 3  # Set based on elbow graph
+        kmeans = KMeans(n_clusters=best_k, random_state=0, n_init=10)
+        df_data_genreAndGlobal['Cluster'] = kmeans.fit_predict(df_data_genreAndGlobal[['Encoded_Genre', 'Global_Sales']])
 
+        plt.figure(figsize=(11, 7.85))
+        plt.scatter(df_data_genreAndGlobal['Global_Sales'], df_data_genreAndGlobal['Encoded_Genre'],
+                    c=df_data_genreAndGlobal['Cluster'], cmap='viridis', s=100)
+        plt.title(f'KMeans Clustering of Global Sales and Genre (k={best_k}) with Recentroiding (10 runs)')
+        plt.xlabel('Global Sales (in millions)')
+        plt.ylabel('Genre')
+        plt.colorbar(label='Cluster')
+
+        genres = label_encoder.classes_
+        labels = [f'{i} = {genre}' for i, genre in enumerate(genres)]
+        handles = [plt.Line2D([0], [0], color='none', label=label) for label in labels]
+        plt.legend(handles=handles, title='Genres', bbox_to_anchor=(1.20, 1), loc='upper left')
+        plt.grid(True)
+        st.pyplot(plt)
+        plt.clf()
+
+    # Display genre 
+    display_data = df_data_genreAndGlobal[['Genre', 'Encoded_Genre']]
+    st.subheader('Genre & Global Sales (K-Means Clustering Model)')
+    st.markdown("""
+    K-Means Clustering is an unsupervised machine learning approach that uses similarities in the data to organize unlabeled data into discrete clusters.
+    `Reference:` https://www.geeksforgeeks.org/k-means-clustering-introduction/
+    """)
+
+    # Elbow graph
+    st.markdown('#### Elbow Graph for the Model')
+    cols = st.columns((1, 2, 1), gap='medium')
+    with cols[1]:
+        elbow_graph()
+
+    # Clustering and cluster interpretation
+    st.markdown('#### Clustering the Model')
+    cols_1 = st.columns((1, 2, 1), gap='medium')
+    with cols_1[1]:
+        kmeans_clustering()
+
+    st.divider()
+
+    # Linear Regression as Independent variables
+    LinearRegressiondata = {
+        'NA_Sales': dataset['NA_Sales'],
+        'EU_Sales': dataset['EU_Sales'],
+        'JP_Sales': dataset['JP_Sales'],
+        'Other_Sales': dataset['Other_Sales'],
+        'Global_Sales': dataset['Global_Sales']
+    }
+    df_data_Linear = pd.DataFrame(LinearRegressiondata)
+
+    from sklearn.impute import SimpleImputer
+    imputer = SimpleImputer(strategy='median')
+    df_data_Linear = pd.DataFrame(imputer.fit_transform(df_data_Linear), columns=df_data_Linear.columns)
+
+    st.subheader('Regional Sales and Global Sales (Linear Regression Model)')
+    st.markdown("""
+    Linear regression analysis is used to represent the relationship between one or more independent variables and a dependent variable.
+    `Reference:` https://www.ibm.com/topics/linear-regression
+    """)
+
+    # Linear regression for each region
+    regions = ['NA_Sales', 'EU_Sales', 'JP_Sales', 'Other_Sales']
+    st.subheader('Training the Model based on the dependent and independent variables')
+    st.code("""
+    for region in regions:
+        X = df_data_Linear[[region]]  # Independent variable
+        y = df_data_Linear['Global_Sales']  # Dependent variable
+        model = LinearRegression()
+        model.fit(X, y)
+        y_pred = model.predict(X)
+        r2_score = model.score(X, y)
+    """)
+
+    st.subheader('Graphed Model')
+
+    # Plotting
+    cols_2 = st.columns((1, 5, 1), gap='medium')
+    with cols_2[1]:
+        plt.figure(figsize=(12, 10))
+        for i, region in enumerate(regions):
+            X = df_data_Linear[[region]]
+            y = df_data_Linear['Global_Sales']
+
+            model = LinearRegression()
+            model.fit(X, y)
+            y_pred = model.predict(X)
+            r2_score = model.score(X, y)
+
+            plt.subplot(2, 2, i + 1)
+            plt.scatter(X, y, color='blue', label=f'{region} vs Global_Sales')
+            plt.plot(X, y_pred, color='red', linewidth=2, label='Regression Line')
+            plt.title(f'{region} vs Global_Sales\nR² = {r2_score:.4f}')
+            plt.xlabel(f'{region}')
+            plt.ylabel('Global_Sales')
+            plt.legend()
+
+        plt.tight_layout()
+        st.pyplot(plt)
+        plt.clf()
    
 
     
