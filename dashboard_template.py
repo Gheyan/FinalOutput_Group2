@@ -308,6 +308,8 @@ def gamegenretime():
   plt.xticks(pivot_data.index, rotation=75)
   plt.tight_layout()
   plt.show()
+  st.pyplot(plt)
+  plt.clf()
 ######
 
 #######################
