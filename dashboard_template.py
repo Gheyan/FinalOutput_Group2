@@ -755,13 +755,22 @@ elif st.session_state.page_selection == "machine_learning":
     def linear_regression():
         df = pd.read_csv("data/vgsales.csv")
         df['Global_Sales'] = pd.to_numeric(df['Global_Sales'], errors='coerce')
-        df.dropna(subset=['Global_Sales'], inplace=True)
+        df.dropna(inplace=True)
 
         # Prepare X and y for linear regression
-        X = df.drop(columns=['Global_Sales', 'Name'])  # Exclude 'Name' and target column
-        X = pd.get_dummies(X, columns=['Genre', 'Platform', 'Publisher'], drop_first=True)  # Encode categorical features
+        X = df.drop(columns=['Global_Sales', 'Name'])
+        X = pd.get_dummies(X, columns=['Genre', 'Platform', 'Publisher'], drop_first=True)
         y = df['Global_Sales']
 
+        # Check for any remaining NaN or infinite values in X and y
+        if X.isnull().values.any() or not np.isfinite(X).all().all():
+            print("Found NaN or infinite values in X.")
+            print(X[X.isnull().any(axis=1)])  
+            X = X.fillna(0) 
+        if y.isnull().values.any() or not np.isfinite(y).all():
+            print("Found NaN or infinite values in y.")
+            y = y.fillna(0) 
+            
         # Split into testing sets
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
