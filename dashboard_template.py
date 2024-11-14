@@ -472,62 +472,7 @@ In Japan, gaming sales data indicate a strong preference for portable gaming, wi
         st.markdown("""Certain combinations of platform and genre have a significant impact on game sales. The most popular combinations show that platform-based games on the Wii platform lead in average sales, reaching approximately 1.6 million units. Following closely, shooter games on the X360 platform achieve an average of 1.4 million units sold, while shooter games on the PS3 platform come in third with an average of 1.3 million units. On the other end of the spectrum, certain genre combinations on the PC platform report the lowest average sales. Puzzle games on the PC platform sell the least, averaging only 37,000 units, while fighting and platform genres on PC are similarly low, each averaging around 45,000 units. This data highlights a significant disparity in sales performance across different platform-genre combinations, with PC games generally underperforming compared to other platforms.""")
         #Felipe
 
-    # BALAGAO - EDA - first graph
-    # reloading the dataset because lagi ako nagkakaerror here help
-    df = pd.read_csv("data/vgsales.csv")
-    df['Global_Sales'] = pd.to_numeric(df['Global_Sales'], errors='coerce')
-    df = df.dropna(subset=['Global_Sales'])
-        
-    st.title("Balagao - Analysis to Maximize Video Game Sales")
-
-    # Visualization - Platform Sales
-    st.markdown("### Total Global Sales by Platform")
-    platform_sales = df.groupby('Platform')['Global_Sales'].sum().sort_values(ascending=False)
-    fig, ax = plt.subplots(figsize=(12, 6))
-    platform_sales.plot(kind='bar', color='purple', ax=ax)
-    ax.set_title('Total Global Sales by Platform')
-    ax.set_xlabel('Platform')
-    ax.set_ylabel('Global Sales (in Millions)')
-    plt.xticks(rotation=45, ha='right')
-    plt.tight_layout()
-    st.pyplot(fig)
-
-    # Visualization - Genre Sales
-    st.markdown("### Total Global Sales by Genre")
-    genre_sales = df.groupby('Genre')['Global_Sales'].sum().sort_values(ascending=False)
-    fig, ax = plt.subplots(figsize=(12, 6))
-    genre_sales.plot(kind='bar', color='pink', ax=ax)
-    ax.set_title('Total Global Sales by Genre')
-    ax.set_xlabel('Genre')
-    ax.set_ylabel('Global Sales (in Millions)')
-    plt.xticks(rotation=45, ha='right')
-    plt.tight_layout()
-    st.pyplot(fig)
-        
-    # BALAGAO - EDA - third graph
-    def bar_graph():
-        df['NA_Sales'] = pd.to_numeric(df['NA_Sales'], errors='coerce')
-        df['EU_Sales'] = pd.to_numeric(df['EU_Sales'], errors='coerce')
-        df['JP_Sales'] = pd.to_numeric(df['JP_Sales'], errors='coerce')
-        df['Other_Sales'] = pd.to_numeric(df['Other_Sales'], errors='coerce')
-
-    platform_sales = df.groupby('Platform')[['NA_Sales', 'EU_Sales', 'JP_Sales', 'Other_Sales']].sum()
-
-    plt.figure(figsize=(12, 8))
-    platform_sales.plot(kind='bar', stacked=True, figsize=(12, 8), color=['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728'])
-
-    plt.title('Sales of Video Game Platforms in Different Regions')
-    plt.xlabel('Platform')
-    plt.ylabel('Sales (in Millions)')
-    plt.xticks(rotation=45, ha='right')
-    plt.legend(title='Region')
-    plt.tight_layout()
-
-    st.pyplot(plt.gcf())
-    bar_graph()
-        
-
-
+    
     
 
 # Data Cleaning Page
