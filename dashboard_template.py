@@ -433,7 +433,7 @@ In Japan, gaming sales data indicate a strong preference for portable gaming, wi
         st.markdown("""Certain combinations of platform and genre have a significant impact on game sales. The most popular combinations show that platform-based games on the Wii platform lead in average sales, reaching approximately 1.6 million units. Following closely, shooter games on the X360 platform achieve an average of 1.4 million units sold, while shooter games on the PS3 platform come in third with an average of 1.3 million units. On the other end of the spectrum, certain genre combinations on the PC platform report the lowest average sales. Puzzle games on the PC platform sell the least, averaging only 37,000 units, while fighting and platform genres on PC are similarly low, each averaging around 45,000 units. This data highlights a significant disparity in sales performance across different platform-genre combinations, with PC games generally underperforming compared to other platforms.""")
         #Felipe
 
-# BALAGAO - EDA - first graph
+    # BALAGAO - EDA - first graph
     # reloading the dataset because lagi ako nagkakaerror here help
     df = pd.read_csv("data/vgsales.csv")
     df['Global_Sales'] = pd.to_numeric(df['Global_Sales'], errors='coerce')
