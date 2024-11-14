@@ -753,7 +753,7 @@ elif st.session_state.page_selection == "machine_learning":
 
     # BALAGAO
     def linear_regression():
-        # Convert 'Global_Sales' to numeric and drop rows with NaN
+        df = pd.read_csv("data/vgsales.csv")
         df['Global_Sales'] = pd.to_numeric(df['Global_Sales'], errors='coerce')
         df.dropna(inplace=True)
 
