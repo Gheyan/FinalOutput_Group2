@@ -752,42 +752,39 @@ elif st.session_state.page_selection == "machine_learning":
         plt.clf()
 
 # BALAGAO - Machine Learning for Regression Model
-    st.subheader("K-Means Clustering Model on Genre & Global Sales")
-    label_encoder = LabelEncoder()
-    df_data_genreAndGlobal['Encoded_Genre'] = label_encoder.fit_transform(df_data_genreAndGlobal['Genre'])
-    
-    def elbow_graph():
-        inertia = []
-        K_range = range(1, 10)
-        for k in K_range:
-            kmeans = KMeans(n_clusters=k, random_state=0, n_init=10)
-            kmeans.fit(df_data_genreAndGlobal[['Encoded_Genre', 'Global_Sales']])
-            inertia.append(kmeans.inertia_)
+    def linear_regression():
+        # reloading the dataset because lagi ako nagkakaerror here help
+        df = pd.read_csv("data/vgsales.csv")
+        df['Global_Sales'] = pd.to_numeric(df['Global_Sales'], errors='coerce')
         
-        plt.plot(K_range, inertia, marker='o')
-        plt.xlabel('Number of clusters (k)')
-        plt.ylabel('Inertia')
-        st.pyplot(plt)
-    
-    elbow_graph()
+        df.dropna(inplace=True)
 
-    # Linear Regression
-    st.subheader("Linear Regression Model on Regional Sales")
-    regions = ['NA_Sales', 'EU_Sales', 'JP_Sales', 'Other_Sales']
-    for region in regions:
-        X = df_data_Linear[[region]]
-        y = df_data_Linear['Global_Sales']
+        X = df.drop(columns=['Global_Sales', 'Name'])
+        X = pd.get_dummies(X, columns=['Genre', 'Platform', 'Publisher'], drop_first=True)
+        global_sales = df['Global_Sales']
+        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
         model = LinearRegression()
-        model.fit(X, y)
-        y_pred = model.predict(X)
-        
-        plt.scatter(X, y, label=region)
-        plt.plot(X, y_pred, color="red", linewidth=2)
-        plt.xlabel(region)
-        plt.ylabel("Global Sales")
-        plt.legend()
+        model.fit(X_train, y_train)
+
+        y_pred = model.predict(X_test)
+
+        mse = mean_squared_error(y_test, y_pred)
+        r2 = r2_score(y_test, y_pred)
+
+        st.write("Mean Squared Error:", mse)
+        st.write("R-squared:", r2)
+
+        plt.figure(figsize=(10, 6))
+        plt.scatter(y_test, y_pred, alpha=0.7)
+        plt.plot([y.min(), y.max()], [y.min(), y.max()], 'k--', lw=2)
+        plt.xlabel('Actual Sales')
+        plt.ylabel('Predicted Sales')
+        plt.title('Actual vs Predicted Global Sales')
+
         st.pyplot(plt)
 
+    linear_regression()
 
    
 
