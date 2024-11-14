@@ -281,7 +281,7 @@ def bar_chart():
 #Felipe
 ######
 #cabantog
-df = df.dropna(subset=['Year'])
+df = dataset.dropna(subset=['Year'])
 df['Year'] = df['Year'].astype(int)
 
 def game_Genre_Sales_Over_Time():
