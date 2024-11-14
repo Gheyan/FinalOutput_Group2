@@ -761,36 +761,39 @@ elif st.session_state.page_selection == "machine_learning":
         X = df.drop(columns=['Global_Sales', 'Name'])
         X = pd.get_dummies(X, columns=['Genre', 'Platform', 'Publisher'], drop_first=True)
         y = df['Global_Sales']
-
+        
         if X.isnull().values.any() or not np.isfinite(X).all().all():
             print("Found NaN or infinite values in X.")
             X = X.fillna(0)  # Replace NaNs with 0 as a quick fix
         if y.isnull().values.any() or not np.isfinite(y).all():
             print("Found NaN or infinite values in y.")
             y = y.fillna(0)  # Replace NaNs with 0 for y as a quick fix
-
-        # Split data into training and testing sets
+        
+        # Split training and testing sets
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-
-        # Initialize and train the Linear Regression model
+        
+        # Train
         model = LinearRegression()
         model.fit(X_train, y_train)
-
-        # Predict 
+        
         y_pred = model.predict(X_test)
-
-        y_test = np.array(y_test)
-        y_pred = np.array(y_pred)
-
-        if y_test.shape != y_pred.shape:
-            print(f"Shape mismatch: y_test shape = {y_test.shape}, y_pred shape = {y_pred.shape}")
-            y_pred = np.resize(y_pred, y_test.shape)  # Resize y_pred to match y_test shape if needed
-
+        
+        y_test = np.array(y_test).flatten()
+        y_pred = np.array(y_pred).flatten()
+        
+        if np.any(np.isnan(y_pred)) or np.any(np.isnan(y_test)):
+            print("NaN values found in predictions or test data.")
+        if not np.isfinite(y_pred).all() or not np.isfinite(y_test).all():
+            print("Non-finite values found in predictions or test data.")
+        
         # Calculate metrics
-        mse = mean_squared_error(y_test, y_pred)
-        r2 = r2_score(y_test, y_pred)
-        print("Mean Squared Error:", mse)
-        print("R-squared:", r2)
+        try:
+            mse = mean_squared_error(y_test, y_pred)
+            r2 = r2_score(y_test, y_pred)
+            print("Mean Squared Error:", mse)
+            print("R-squared:", r2)
+        except ValueError as e:
+            print(f"Error in metric calculation: {e}")
 
         # Visualization: Actual vs Predicted
         plt.figure(figsize=(10, 6))
