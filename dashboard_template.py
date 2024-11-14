@@ -752,7 +752,6 @@ elif st.session_state.page_selection == "machine_learning":
         plt.clf()
 
     # BALAGAO
-    # BALAGAO
     def linear_regression():
         df = pd.read_csv("data/vgsales.csv")
         df['Global_Sales'] = pd.to_numeric(df['Global_Sales'], errors='coerce')
@@ -761,31 +760,36 @@ elif st.session_state.page_selection == "machine_learning":
         X = df.drop(columns=['Global_Sales', 'Name'])
         X = pd.get_dummies(X, columns=['Genre', 'Platform', 'Publisher'], drop_first=True)
         y = df['Global_Sales']
-        
+    
+        # Check for NaN or infinite values
         if X.isnull().values.any() or not np.isfinite(X).all().all():
             print("Found NaN or infinite values in X.")
-            X = X.fillna(0)  # Replace NaNs with 0 as a quick fix
+            X = X.fillna(0)
         if y.isnull().values.any() or not np.isfinite(y).all():
             print("Found NaN or infinite values in y.")
-            y = y.fillna(0)  # Replace NaNs with 0 for y as a quick fix
-        
+            y = y.fillna(0)
+    
         # Split training and testing sets
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-        
+    
         # Train
         model = LinearRegression()
         model.fit(X_train, y_train)
-        
+    
         y_pred = model.predict(X_test)
-        
+    
+        # Ensure y_test and y_pred are flattened and check their shapes
         y_test = np.array(y_test).flatten()
         y_pred = np.array(y_pred).flatten()
-        
+    
+        print("y_test shape:", y_test.shape)
+        print("y_pred shape:", y_pred.shape)
+
         if np.any(np.isnan(y_pred)) or np.any(np.isnan(y_test)):
             print("NaN values found in predictions or test data.")
         if not np.isfinite(y_pred).all() or not np.isfinite(y_test).all():
             print("Non-finite values found in predictions or test data.")
-        
+
         # Calculate metrics
         try:
             mse = mean_squared_error(y_test, y_pred)
@@ -794,17 +798,12 @@ elif st.session_state.page_selection == "machine_learning":
             print("R-squared:", r2)
         except ValueError as e:
             print(f"Error in metric calculation: {e}")
+            print(f"y_test: {y_test}, y_pred: {y_pred}")
 
         # Visualization: Actual vs Predicted
         plt.figure(figsize=(10, 6))
         plt.scatter(y_test, y_pred, alpha=0.7)
-        plt.plot([y.min(), y.max()], [y.min(), y.max()], 'k--', lw=2)
-        plt.xlabel('Actual Sales')
-        plt.ylabel('Predicted Sales')
-        plt.title('Actual vs Predicted Global Sales')
-        plt.show()
-
-    linear_regression()
+        plt.plot([y.min(), y.max()], [y.min(), y.max()], '
    
 
     
