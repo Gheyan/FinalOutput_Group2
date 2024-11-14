@@ -753,55 +753,48 @@ elif st.session_state.page_selection == "machine_learning":
 
     # BALAGAO
     def linear_regression():
-        df = pd.read_csv("data/vgsales.csv")
+        # Convert 'Global_Sales' to numeric and drop rows with NaN
         df['Global_Sales'] = pd.to_numeric(df['Global_Sales'], errors='coerce')
         df.dropna(inplace=True)
 
-        # Prepare X and y for linear regression
         X = df.drop(columns=['Global_Sales', 'Name'])
         X = pd.get_dummies(X, columns=['Genre', 'Platform', 'Publisher'], drop_first=True)
         y = df['Global_Sales']
-
-        # Check for any remaining NaN or infinite values in X and y
+    
         if X.isnull().values.any() or not np.isfinite(X).all().all():
             print("Found NaN or infinite values in X.")
-            print(X[X.isnull().any(axis=1)])  
-            X = X.fillna(0) 
+            X = X.fillna(0)  # Replace NaNs with 0 as a quick fix
         if y.isnull().values.any() or not np.isfinite(y).all():
             print("Found NaN or infinite values in y.")
-            y = y.fillna(0) 
-            
-        # Split into testing sets
+            y = y.fillna(0)  # Replace NaNs with 0 for y as a quick fix
+    
+        # Split data into training and testing sets
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-
+    
+        # Initialize and train the Linear Regression model
         model = LinearRegression()
         model.fit(X_train, y_train)
 
-        # Make predictions
+        # Predict on test data
         y_pred = model.predict(X_test)
 
-        # Mean Squared Error 
-        # R-squared score
+        y_test = np.array(y_test)
+        y_pred = np.array(y_pred)
+
+        # Calculate metrics
         mse = mean_squared_error(y_test, y_pred)
         r2 = r2_score(y_test, y_pred)
+        print("Mean Squared Error:", mse)
+        print("R-squared:", r2)
 
-        # Metrics
-        st.subheader("Linear Regression Metrics")
-        st.write("Mean Squared Error:", mse)
-        st.write("R-squared:", r2)
-
-        # Plot the actual vs predicted values
+        # Visualization: Actual vs Predicted
         plt.figure(figsize=(10, 6))
-        plt.scatter(y_test, y_pred, alpha=0.7, color="blue", label="Predictions")
-        plt.plot([y.min(), y.max()], [y.min(), y.max()], 'k--', lw=2, color="red", label="Ideal fit")
-        plt.xlabel("Actual Sales")
-        plt.ylabel("Predicted Sales")
-        plt.title("Actual vs Predicted Global Sales")
-        plt.legend()
-
-        # Plotting
-        st.pyplot(plt)
-        plt.clf()
+        plt.scatter(y_test, y_pred, alpha=0.7)
+        plt.plot([y.min(), y.max()], [y.min(), y.max()], 'k--', lw=2)
+        plt.xlabel('Actual Sales')
+        plt.ylabel('Predicted Sales')
+        plt.title('Actual vs Predicted Global Sales')
+        plt.show()
 
     st.header("🤖 Machine Learning - Linear Regression Analysis")
     st.markdown("""This section analyzes the relationship between regional sales and global sales using a linear regression model.""")
