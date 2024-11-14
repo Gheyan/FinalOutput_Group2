@@ -803,7 +803,7 @@ elif st.session_state.page_selection == "machine_learning":
         # Visualization: Actual vs Predicted
         plt.figure(figsize=(10, 6))
         plt.scatter(y_test, y_pred, alpha=0.7)
-        plt.plot([y.min(), y.max()], [y.min(), y.max()], '
+        plt.plot([y.min(), y.max()], [y.min(), y.max()], 
    
 
     
