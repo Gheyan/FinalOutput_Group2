@@ -281,11 +281,11 @@ def bar_chart():
 #Felipe
 ######
 #cabantog
-df = dataset.dropna(subset=['Year'])
-df['Year'] = df['Year'].astype(int)
+mydf = dataset.dropna(subset=['Year'])
+mydf['Year'] = mydf['Year'].astype(int)
 
 def game_Genre_Sales_Over_Time():
-  data = {'Year': df['Year'], 'Genre': df['Genre'], 'Global Sales': df['Global_Sales']}
+  data = {'Year': mydf['Year'], 'Genre': mydf['Genre'], 'Global Sales': mydf['Global_Sales']}
   genre_df = pd.DataFrame(data)
 
   grouped_data = genre_df.groupby(['Year', 'Genre']).sum().reset_index()
