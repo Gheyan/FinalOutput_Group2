@@ -751,7 +751,52 @@ elif st.session_state.page_selection == "machine_learning":
         st.pyplot(plt)
         plt.clf()
 
+    # BALAGAO
+    def linear_regression():
+        df = pd.read_csv("data/vgsales.csv")
+        df['Global_Sales'] = pd.to_numeric(df['Global_Sales'], errors='coerce')
+        df.dropna(subset=['Global_Sales'], inplace=True)
 
+        # Prepare X and y for linear regression
+        X = df.drop(columns=['Global_Sales', 'Name'])  # Exclude 'Name' and target column
+        X = pd.get_dummies(X, columns=['Genre', 'Platform', 'Publisher'], drop_first=True)  # Encode categorical features
+        y = df['Global_Sales']
+
+        # Split into testing sets
+        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+        model = LinearRegression()
+        model.fit(X_train, y_train)
+
+        # Make predictions
+        y_pred = model.predict(X_test)
+
+        # Mean Squared Error 
+        # R-squared score
+        mse = mean_squared_error(y_test, y_pred)
+        r2 = r2_score(y_test, y_pred)
+
+        # Metrics
+        st.subheader("Linear Regression Metrics")
+        st.write("Mean Squared Error:", mse)
+        st.write("R-squared:", r2)
+
+        # Plot the actual vs predicted values
+        plt.figure(figsize=(10, 6))
+        plt.scatter(y_test, y_pred, alpha=0.7, color="blue", label="Predictions")
+        plt.plot([y.min(), y.max()], [y.min(), y.max()], 'k--', lw=2, color="red", label="Ideal fit")
+        plt.xlabel("Actual Sales")
+        plt.ylabel("Predicted Sales")
+        plt.title("Actual vs Predicted Global Sales")
+        plt.legend()
+
+        # Plotting
+        st.pyplot(plt)
+        plt.clf()
+
+    st.header("🤖 Machine Learning - Linear Regression Analysis")
+    st.markdown("""This section analyzes the relationship between regional sales and global sales using a linear regression model.""")
+    linear_regression()
    
 
     
