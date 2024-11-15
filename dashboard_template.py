@@ -911,7 +911,6 @@ elif st.session_state.page_selection == "machine_learning":
             results_df, 
             x='Actual', 
             y='Predicted', 
-            color_discrete_map={'Actual': 'pink', 'Predicted': 'purple'},
             title='Actual vs Predicted Global Sales',)
         fig.add_scatter(x=[results_df['Actual'].min(), 
                            results_df['Actual'].max()],
