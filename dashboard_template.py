@@ -750,6 +750,7 @@ elif st.session_state.page_selection == "machine_learning":
 
         st.pyplot(plt)
         plt.clf()
+        print("Type of r2_score:", type(r2_score))
 
     # BALAGAO
     def linear_regression():
@@ -791,9 +792,7 @@ elif st.session_state.page_selection == "machine_learning":
         if not np.isfinite(y_pred).all() or not np.isfinite(y_test).all():
             print("Non-finite values found in predictions or test data.")
 
-        # Calculate metrics
-        print("Type of r2_score:", type(r2_score))
-        
+        # Calculate metrics        
         try:
             mse = mean_squared_error(y_test, y_pred)
             r2 = r2_score(y_test, y_pred)
