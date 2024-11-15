@@ -751,76 +751,7 @@ elif st.session_state.page_selection == "machine_learning":
         st.pyplot(plt)
         plt.clf()
 
-    # BALAGAO
-    def linear_regression():
-        df = pd.read_csv("data/vgsales.csv")
-        df['Global_Sales'] = pd.to_numeric(df['Global_Sales'], errors='coerce')
-        df.dropna(inplace=True)
 
-        X = df.drop(columns=['Global_Sales', 'Name'])
-        X = pd.get_dummies(X, columns=['Genre', 'Platform', 'Publisher'], drop_first=True)
-        y = df['Global_Sales']
-    
-        if X.isnull().values.any() or not np.isfinite(X).all().all():
-            print("Found NaN or infinite values in X.")
-            X = X.fillna(0)
-        if y.isnull().values.any() or not np.isfinite(y).all():
-            print("Found NaN or infinite values in y.")
-            y = y.fillna(0)
-    
-        # Split training and testing sets
-        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-    
-        # Train
-        model = LinearRegression()
-        model.fit(X_train, y_train)
-    
-        y_pred = model.predict(X_test)
-    
-        # Ensure y_test and y_pred are flattened
-        y_test = np.array(y_test).flatten()
-        y_pred = np.array(y_pred).flatten()
-
-        print("y_test shape:", y_test.shape)
-        print("y_pred shape:", y_pred.shape)
-
-        if np.any(np.isnan(y_pred)) or np.any(np.isnan(y_test)):
-            print("NaN values found in predictions or test data.")
-        if not np.isfinite(y_pred).all() or not np.isfinite(y_test).all():
-            print("Non-finite values found in predictions or test data.")
-
-        # Calculate metrics        
-        try:
-            mse = mean_squared_error(y_test, y_pred)
-            r2_value = model.score(X_test, y_test)
-            st.write("Mean Squared Error: {:.4f}".format(mse))
-            st.write("R-squared: {:.4f}".format(r2_value))
-        except ValueError as e:
-            print(f"Error in metric calculation: {e}")
-
-        # Visualization: Actual vs Predicted
-        results_df = pd.DataFrame({'Actual': y_test, 'Predicted': y_pred})
-
-        st.write("### Actual vs Predicted Global Sales")
-        st.scatter_chart(results_df)
-
-        perfect_prediction = pd.DataFrame({
-            'Perfect Prediction': [results_df['Actual'].min(), results_df['Actual'].max()],
-            'Perfect Prediction Value': [results_df['Actual'].min(), results_df['Actual'].max()]
-        })
-
-        st.line_chart(perfect_prediction.set_index('Perfect Prediction'), use_container_width=True)
-
-        import plotly.express as px
-
-        fig = px.scatter(results_df, x='Actual', y='Predicted', title='Actual vs Predicted Global Sales')
-        fig.add_scatter(x=[results_df['Actual'].min(), results_df['Actual'].max()],
-                         y=[results_df['Actual'].min(), results_df['Actual'].max()],
-                         mode='lines', name='Perfect Prediction', line=dict(color='red', dash='dash'))
-
-        st.plotly_chart(fig)
-
-    linear_regression()
    
 
     
