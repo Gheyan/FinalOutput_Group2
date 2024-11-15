@@ -572,11 +572,28 @@ elif st.session_state.page_selection == "data_cleaning":
 
     # BALAGAO - Data Cleaning for Linear Regression Model
     st.subheader('Actual vs Predicted Global Sales (Linear Regression Model)')
+
+    # Data preparation
+    X = dataset[['NA_Sales', 'EU_Sales', 'JP_Sales', 'Other_Sales']]  # Independent variables
+    y = dataset['Global_Sales']  # Dependent variable
+
+    # Split into training and testing sets
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+    # Training 
+    # Prediction
+    model = LinearRegression()
+    model.fit(X_train, y_train)
+
+    y_pred = model.predict(X_test)
+
+    # Results dataframe
     results_df = pd.DataFrame({
         'Actual Global Sales': y_test, 
         'Predicted Global Sales': y_pred  
     })
-    
+
+
     LinearRegData = {
         'NA_Sales': dataset['NA_Sales'],
         'EU_Sales': dataset['EU_Sales'],
@@ -584,21 +601,29 @@ elif st.session_state.page_selection == "data_cleaning":
         'Other_Sales': dataset['Other_Sales'],
         'Global_Sales': dataset['Global_Sales']
     }
-    # Create a DataFrame from the dictionary
-    df = pd.DataFrame(LinearRegData)
-    st.dataframe(df_data_Linear, use_container_width=True,hide_index=True)
-    st.markdown('...')
 
+    df = pd.DataFrame(LinearRegData)
+
+    st.dataframe(df, use_container_width=True, hide_index=True)
+
+    st.markdown('This table shows the sales data used for training the model.')
+
+    # Scatter plot for actual vs predicted global sales
     fig = px.scatter(results_df, 
-                     x='Actual Global Sales', 
-                     y='Predicted Global Sales', 
-                     title='Actual vs Predicted Global Sales',
-                     labels={'Actual Global Sales': 'Actual Global Sales', 'Predicted Global Sales': 'Predicted Global Sales'})
+                 x='Actual Global Sales', 
+                 y='Predicted Global Sales', 
+                 title='Actual vs Predicted Global Sales',
+                 labels={'Actual Global Sales': 'Actual Global Sales', 
+                         'Predicted Global Sales': 'Predicted Global Sales'})
+
+    # Reference line for the prediction
     fig.add_scatter(x=[results_df['Actual Global Sales'].min(), 
-                        results_df['Actual Global Sales'].max()],
-                        y=[results_df['Actual Global Sales'].min(), 
-                           results_df['Actual Global Sales'].max()],
-                        mode='lines', name='Perfect Prediction', line=dict(color='red', dash='dash'))
+                    results_df['Actual Global Sales'].max()],
+                 y=[results_df['Actual Global Sales'].min(), 
+                    results_df['Actual Global Sales'].max()],
+                 mode='lines', name='Perfect Prediction', 
+                 line=dict(color='red', dash='dash'))
+
     st.plotly_chart(fig)
 
 
