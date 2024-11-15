@@ -603,7 +603,7 @@ elif st.session_state.page_selection == "machine_learning":
         plt.grid(True)
 
         st.pyplot(plt)
-        plt.clf()# BALAGAO - EDA
+        plt.clf()
 
     def kmeans_clustering():
         best_k = 3  # Set based on elbow graph
@@ -792,6 +792,8 @@ elif st.session_state.page_selection == "machine_learning":
             print("Non-finite values found in predictions or test data.")
 
         # Calculate metrics
+        print("Type of r2_score:", type(r2_score))
+        
         try:
             mse = mean_squared_error(y_test, y_pred)
             r2 = r2_score(y_test, y_pred)
