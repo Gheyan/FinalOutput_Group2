@@ -603,28 +603,8 @@ elif st.session_state.page_selection == "data_cleaning":
     }
 
     df = pd.DataFrame(LinearRegData)
-
     st.dataframe(df, use_container_width=True, hide_index=True)
 
-    st.markdown('This table shows the sales data used for training the model.')
-
-    # Scatter plot for actual vs predicted global sales
-    fig = px.scatter(results_df, 
-                 x='Actual Global Sales', 
-                 y='Predicted Global Sales', 
-                 title='Actual vs Predicted Global Sales',
-                 labels={'Actual Global Sales': 'Actual Global Sales', 
-                         'Predicted Global Sales': 'Predicted Global Sales'})
-
-    # Reference line for the prediction
-    fig.add_scatter(x=[results_df['Actual Global Sales'].min(), 
-                    results_df['Actual Global Sales'].max()],
-                 y=[results_df['Actual Global Sales'].min(), 
-                    results_df['Actual Global Sales'].max()],
-                 mode='lines', name='Perfect Prediction', 
-                 line=dict(color='red', dash='dash'))
-
-    st.plotly_chart(fig)
 
 
 
