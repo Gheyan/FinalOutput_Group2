@@ -572,7 +572,11 @@ elif st.session_state.page_selection == "data_cleaning":
 
     # BALAGAO - Data Cleaning for Linear Regression Model
     st.subheader('Actual vs Predicted Global Sales (Linear Regression Model)')
-    df = pd.read_csv("data/vgsales.csv")
+    results_df = pd.DataFrame({
+        'Actual Global Sales': y_test, 
+        'Predicted Global Sales': y_pred  
+    })
+    
     LinearRegData = {
         'NA_Sales': dataset['NA_Sales'],
         'EU_Sales': dataset['EU_Sales'],
