@@ -21,7 +21,6 @@ from sklearn.cluster import KMeans
 from sklearn.semi_supervised import LabelPropagation
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import mean_squared_error, r2_score
-from sklearn.metrics import mean_squared_error, rTwo_score
 from sklearn.linear_model import LinearRegression
 
 #######################
@@ -795,9 +794,9 @@ elif st.session_state.page_selection == "machine_learning":
         # Calculate metrics
         try:
             mse = mean_squared_error(y_test, y_pred)
-            r2 = rTwo_score(y_test, y_pred)
-            print("Mean Squared Error:", mse)
-            print("R-squared:", r2)
+            r2 = r2_score(y_test, y_pred)
+            print("Mean Squared Error: {:.4f}".format(mse))
+            print("R-squared: {:.4f}".format(r2))
         except ValueError as e:
             print(f"Error in metric calculation: {e}")
 
