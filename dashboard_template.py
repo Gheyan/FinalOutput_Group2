@@ -79,7 +79,7 @@ with st.sidebar:
 
     # Project Details
     st.subheader("Abstract")
-    st.markdown("A Streamlit dashboard highlighting the results of a training three models using the Video Game Sales dataset from Kaggle.")
+    st.markdown("A Streamlit dashboard highlighting the results of a training models using the Video Game Sales dataset from Kaggle.")
     st.markdown("📊 [Dataset](https://www.kaggle.com/datasets/gregorut/videogamesales/data)")
     st.markdown("📗 [Google Colab Notebook](https://colab.research.google.com/drive/1PinmgyIyVgvNG0V0cNRMxhJbwuC02iPe?usp=sharing)")
     st.markdown("🐙 [GitHub Repository](https://github.com/Gheyan/FinalOutput_Group2.git)")
