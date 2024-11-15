@@ -21,6 +21,7 @@ from sklearn.cluster import KMeans
 from sklearn.semi_supervised import LabelPropagation
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import mean_squared_error, r2_score
+from sklearn.metrics import mean_squared_error, rTwo_score
 from sklearn.linear_model import LinearRegression
 
 #######################
