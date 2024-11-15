@@ -845,6 +845,11 @@ elif st.session_state.page_selection == "machine_learning":
         model = LinearRegression()
         model.fit(X_train, y_train)
 
+        #st.subheader('Training the Model based on the dependent and independent variables')
+        #st.code("""
+        #    ...
+        #    """)
+        
         # (6) making predictions
         # y_test and y_pred are flattened
         y_pred = model.predict(X_test)
@@ -899,21 +904,22 @@ elif st.session_state.page_selection == "machine_learning":
 
         st.line_chart(perfect_prediction.set_index('Perfect Prediction'), use_container_width=True)
 
+        # Display the graph
+        
         # import plotly.express as px
         fig = px.scatter(
             results_df, 
             x='Actual', 
             y='Predicted', 
-            title='Actual vs Predicted Global Sales',
-            color='Actual',
-            color_continuous_scale='Viridis')
+            color_discrete_map={'Actual': 'pink', 'Predicted': 'purple'}
+            title='Actual vs Predicted Global Sales',)
         fig.add_scatter(x=[results_df['Actual'].min(), 
                            results_df['Actual'].max()],
                          y=[results_df['Actual'].min(), 
                             results_df['Actual'].max()],
                          mode='lines', 
                          name='Perfect Prediction', 
-                         line=dict(color='blue', dash='dash'))
+                         line=dict(color='pink', dash='dash'))
 
         st.plotly_chart(fig)
 
