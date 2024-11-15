@@ -904,7 +904,7 @@ elif st.session_state.page_selection == "machine_learning":
             results_df, 
             x='Actual', 
             y='Predicted', 
-            title='Actual vs Predicted Global Sales,
+            title='Actual vs Predicted Global Sales',
             color='Actual',
             color_continuous_scale='Viridis')
         fig.add_scatter(x=[results_df['Actual'].min(), 
