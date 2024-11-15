@@ -799,7 +799,6 @@ elif st.session_state.page_selection == "machine_learning":
             print("R-squared:", r2)
         except ValueError as e:
             print(f"Error in metric calculation: {e}")
-            print(f"y_test: {y_test}, y_pred: {y_pred}")
 
         # Visualization: Actual vs Predicted
         plt.figure(figsize=(10, 6))
