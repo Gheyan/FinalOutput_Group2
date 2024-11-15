@@ -788,7 +788,7 @@ elif st.session_state.page_selection == "machine_learning":
         st.pyplot(plt)
         plt.clf()
 
-     # BALAGAO
+     # BALAGAO - Machine Model for Linear Regression Model
     def linear_regression():
         df = pd.read_csv("data/vgsales.csv")
         df['Global_Sales'] = pd.to_numeric(df['Global_Sales'], errors='coerce')
@@ -909,6 +909,15 @@ elif st.session_state.page_selection == "prediction":
 
     # Run the app
     sales_prediction_app()
+
+    # BALAGAO - predictions for the Linear Regression Model????
+    
+    st.subheader("Predict Global Sales")
+    sales_input = st.number_input("Enter sales for each region (in millions):", min_value=0.0, step=0.1)
+    
+    na_sales_input = st.number_input("Enter NA Sales (in millions):", min_value=0.0, step=0.1)
+    eu_sales_input = st.number_input("Enter EU Sales (in millions):", min_value=0.0, step=0.1)
+    jp_sales_input = st.number_input("Enter JP Sales (in millions):", min_value=0.0
 
 # Conclusions Page
 elif st.session_state.page_selection == "conclusion":
