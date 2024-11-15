@@ -425,17 +425,17 @@ elif st.session_state.page_selection == "eda":
         eu_sales_distribution();
         st.markdown("""Action is the best-selling genre in EU (Europe). The Sports genre is the second-best selling genre in the region by a relatively small margin, followed closely by Shooter games.""")
 
-        # BALAGAO - EDA 
+        # BALAGAO - EDA first graphs
         st.markdown('### Global Sales Platform Chart')
         bar_graph1();
         st.markdown("""
-PS2 stands as the highest-selling platform, followed by the X360 in second place and the PS3 in third. This ranking highlights a clear preference among consumers for these particular platforms, suggesting they hold the largest market share in terms of sales compared to other gaming platforms.""")
+                PS2 stands as the highest-selling platform, followed by the X360 in second place and the PS3 in third. This ranking highlights a clear preference among consumers for these particular platforms, suggesting they hold the largest market share in terms of sales compared to other gaming platforms.""")
         
         st.markdown('### Platform Sales by Region Chart')
         bar_chart();
         st.markdown("""
-In Japan, gaming sales data indicate a strong preference for portable gaming, with a significant portion of sales coming from the Nintendo DS, a popular handheld device. In contrast, North American gamers tend to prefer more powerful console systems, as reflected in the top-selling platforms, which include the PlayStation 2 (PS2) and Xbox 360 (X360). European consumers also show a particular affinity for the PlayStation series, with the PS2 and PS3 leading in sales in this region. Similarly, in markets outside of Europe, Japan, and North America, the PS2 stands out as the most favored gaming platform, with sales surpassing those of other gaming systems in these areas.""")
-        #Felipe
+                In Japan, gaming sales data indicate a strong preference for portable gaming, with a significant portion of sales coming from the Nintendo DS, a popular handheld device. In contrast, North American gamers tend to prefer more powerful console systems, as reflected in the top-selling platforms, which include the PlayStation 2 (PS2) and Xbox 360 (X360). European consumers also show a particular affinity for the PlayStation series, with the PS2 and PS3 leading in sales in this region. Similarly, in markets outside of Europe, Japan, and North America, the PS2 stands out as the most favored gaming platform, with sales surpassing those of other gaming systems in these areas.""")
+
         ##cabantog
         st.markdown('### Game Genre Sales Over Time Chart')
         gamegenretime();
@@ -856,6 +856,10 @@ elif st.session_state.page_selection == "machine_learning":
                          mode='lines', name='Perfect Prediction', line=dict(color='red', dash='dash'))
 
         st.plotly_chart(fig)
+
+        st.markdown(""" We can see that the actual and predicted sales are the same, it means that our model has perfectly forecasted the sales figures for the video games. This shows that the model is accurately capturing the relationship between the game features and the sales numbers.
+However, it is better not to be complacent as this could also signify that the model is overfitting and a significant percentage error.
+            """)
 
     linear_regression()
    
