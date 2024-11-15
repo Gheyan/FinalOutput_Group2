@@ -913,7 +913,7 @@ elif st.session_state.page_selection == "machine_learning":
                             results_df['Actual'].max()],
                          mode='lines', 
                          name='Perfect Prediction', 
-                         line=dict(color='blue, dash='dash'))
+                         line=dict(color='blue', dash='dash'))
 
         st.plotly_chart(fig)
 
