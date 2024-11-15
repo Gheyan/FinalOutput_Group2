@@ -750,7 +750,6 @@ elif st.session_state.page_selection == "machine_learning":
 
         st.pyplot(plt)
         plt.clf()
-        print("Type of r2_score:", type(r2_score))
 
     # BALAGAO
     def linear_regression():
@@ -795,7 +794,7 @@ elif st.session_state.page_selection == "machine_learning":
         # Calculate metrics        
         try:
             mse = mean_squared_error(y_test, y_pred)
-            r2 = r2_score(y_test, y_pred)
+            r2 = r2_value(y_test, y_pred)
             print("Mean Squared Error: {:.4f}".format(mse))
             print("R-squared: {:.4f}".format(r2))
         except ValueError as e:
