@@ -820,14 +820,17 @@ elif st.session_state.page_selection == "machine_learning":
 
      # BALAGAO - Machine Model for Linear Regression Model
     def linear_regression():
+        # (1) loading the date
         df = pd.read_csv("data/vgsales.csv")
         df['Global_Sales'] = pd.to_numeric(df['Global_Sales'], errors='coerce')
         df.dropna(inplace=True)
 
+        # (2) selecting features
         X = df.drop(columns=['Global_Sales', 'Name'])
         X = pd.get_dummies(X, columns=['Genre', 'Platform', 'Publisher'], drop_first=True)
         y = df['Global_Sales']
-    
+
+        # (3) handling any NaN / infinite values
         if X.isnull().values.any() or not np.isfinite(X).all().all():
             print("Found NaN or infinite values in X.")
             X = X.fillna(0)
@@ -835,16 +838,17 @@ elif st.session_state.page_selection == "machine_learning":
             print("Found NaN or infinite values in y.")
             y = y.fillna(0)
     
-        # Split training and testing sets
+        # (4) splitting training and testing sets
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
     
-        # Train
+        # (5) training the model
         model = LinearRegression()
         model.fit(X_train, y_train)
-    
+
+        # (6) making predictions
+        # y_test and y_pred are flattened
         y_pred = model.predict(X_test)
     
-        # Ensure y_test and y_pred are flattened
         y_test = np.array(y_test).flatten()
         y_pred = np.array(y_pred).flatten()
 
@@ -856,7 +860,7 @@ elif st.session_state.page_selection == "machine_learning":
         if not np.isfinite(y_pred).all() or not np.isfinite(y_test).all():
             print("Non-finite values found in predictions or test data.")
 
-        # Calculate metrics        
+        # (7) calculating metrics        
         try:
             mse = mean_squared_error(y_test, y_pred)
             r2_value = model.score(X_test, y_test)
@@ -865,10 +869,27 @@ elif st.session_state.page_selection == "machine_learning":
         except ValueError as e:
             print(f"Error in metric calculation: {e}")
 
+        # (8) displaying coefficients for the prediction
+        coefficients = model.coef_
+        intercept = model.intercept_
+
+        feature_names = X.columns
+        coefficients_df = pd.DataFrame({'Feature': feature_names, 'Coefficient': coefficients})
+        st.write("### Model Coefficients")
+        st.write(coefficients_df)
+        
         # Visualization: Actual vs Predicted
         results_df = pd.DataFrame({'Actual': y_test, 'Predicted': y_pred})
 
         st.write("### Actual vs Predicted Global Sales")
+        st.markdown("""
+                Linear regression is a type of supervised machine learning algorithm that computes the linear relationship between the
+                dependent variable and one or more independent features by fitting a linear equation to observed data. 
+                 
+    `Reference:` https://www.geeksforgeeks.org/ml-linear-regression/
+                 https://www.elastic.co/guide/en/machine-learning/current/ml-dfa-regression.html#:~:text=Regression%20analysis%20is%20a%20supervised,data%20based%20on%20these%20relationships.
+                
+    """)
         st.scatter_chart(results_df)
 
         perfect_prediction = pd.DataFrame({
@@ -878,8 +899,7 @@ elif st.session_state.page_selection == "machine_learning":
 
         st.line_chart(perfect_prediction.set_index('Perfect Prediction'), use_container_width=True)
 
-        import plotly.express as px
-
+        # import plotly.express as px
         fig = px.scatter(results_df, x='Actual', y='Predicted', title='Actual vs Predicted Global Sales')
         fig.add_scatter(x=[results_df['Actual'].min(), results_df['Actual'].max()],
                          y=[results_df['Actual'].min(), results_df['Actual'].max()],
@@ -944,14 +964,6 @@ elif st.session_state.page_selection == "prediction":
     # Run the app
     sales_prediction_app()
 
-    # BALAGAO - predictions for the Linear Regression Model????
-    
-    st.subheader("Predict Global Sales")
-    sales_input = st.number_input("Enter sales for each region (in millions):", min_value=0.0, step=0.1)
-    
-    na_sales_input = st.number_input("Enter NA Sales (in millions):", min_value=0.0, step=0.1)
-    eu_sales_input = st.number_input("Enter EU Sales (in millions):", min_value=0.0, step=0.1)
-    jp_sales_input = st.number_input("Enter JP Sales (in millions):", min_value=0.0)
 
 # Conclusions Page
 elif st.session_state.page_selection == "conclusion":
