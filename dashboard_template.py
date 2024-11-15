@@ -900,10 +900,20 @@ elif st.session_state.page_selection == "machine_learning":
         st.line_chart(perfect_prediction.set_index('Perfect Prediction'), use_container_width=True)
 
         # import plotly.express as px
-        fig = px.scatter(results_df, x='Actual', y='Predicted', title='Actual vs Predicted Global Sales')
-        fig.add_scatter(x=[results_df['Actual'].min(), results_df['Actual'].max()],
-                         y=[results_df['Actual'].min(), results_df['Actual'].max()],
-                         mode='lines', name='Perfect Prediction', line=dict(color='red', dash='dash'))
+        fig = px.scatter(
+            results_df, 
+            x='Actual', 
+            y='Predicted', 
+            title='Actual vs Predicted Global Sales,
+            color='Actual',
+            color_continuous_scale='Viridis')
+        fig.add_scatter(x=[results_df['Actual'].min(), 
+                           results_df['Actual'].max()],
+                         y=[results_df['Actual'].min(), 
+                            results_df['Actual'].max()],
+                         mode='lines', 
+                         name='Perfect Prediction', 
+                         line=dict(color='blue, dash='dash'))
 
         st.plotly_chart(fig)
 
