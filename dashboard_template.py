@@ -584,37 +584,10 @@ elif st.session_state.page_selection == "data_cleaning":
     st.dataframe(df_data_Linear, use_container_width=True,hide_index=True)
     st.markdown('...')
 
-    # Check for null values in 'Genre' and 'Global_Sales' columns
-    null_counts = df_data_Linear[['Genre', 'Global_Sales']].isnull().sum()
-    if null_counts.any():
-        st.warning(f"Null values found:\n{null_counts[null_counts > 0]}")
-    else:
-        st.success("No null values found in the selected columns.")
+    
 
-    st.markdown('Using the `.isnull().sum()` in our specific chunk of the dataset, we will check if there are any null values that need to be processed. Since no null values are found, no extra processing in terms of removing or reprocessing the missing values is required.')
 
-    # X - independent and y - dependent
-    st.subheader('Splitting the Data into X (independent variable) and y (dependent variable)')
-    st.code("""
-        regions = ['NA_Sales', 'EU_Sales', 'JP_Sales', 'Other_Sales']
 
-        plt.figure(figsize=(12, 10))
-        for i, region in enumerate(regions):
-            X = sales_data[[region]]  # Independent variable (region)
-        y = sales_data['Global_Sales']  # Dependent variable (Global_Sales)
-        """)
-
-    # Define the var
-    X_Linear = df_data_Linear[['NA_Sales', 'EU_Sales', 'JP_Sales', 'Other_Sales']]  # Independent variables (regional sales)
-    y_Linear = df_data_Linear['Global_Sales']  # Dependent variable (Global_Sales)
-
-    # Independent var - display the dataframe
-    st.subheader('X (independent variable)')
-    st.dataframe(X_Linear, use_container_width=True, hide_index=True)
-
-    # Dependent var - display the series
-    st.subheader('y (dependent variable)')
-    st.dataframe(y_Linear, use_container_width=True, hide_index=True)
 
 
 # Machine Learning Page
