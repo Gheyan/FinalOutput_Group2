@@ -917,7 +917,7 @@ elif st.session_state.page_selection == "prediction":
     
     na_sales_input = st.number_input("Enter NA Sales (in millions):", min_value=0.0, step=0.1)
     eu_sales_input = st.number_input("Enter EU Sales (in millions):", min_value=0.0, step=0.1)
-    jp_sales_input = st.number_input("Enter JP Sales (in millions):", min_value=0.0
+    jp_sales_input = st.number_input("Enter JP Sales (in millions):", min_value=0.0)
 
 # Conclusions Page
 elif st.session_state.page_selection == "conclusion":
