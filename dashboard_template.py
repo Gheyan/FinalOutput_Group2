@@ -761,7 +761,6 @@ elif st.session_state.page_selection == "machine_learning":
         X = pd.get_dummies(X, columns=['Genre', 'Platform', 'Publisher'], drop_first=True)
         y = df['Global_Sales']
     
-        # Check for NaN or infinite values
         if X.isnull().values.any() or not np.isfinite(X).all().all():
             print("Found NaN or infinite values in X.")
             X = X.fillna(0)
@@ -785,7 +784,6 @@ elif st.session_state.page_selection == "machine_learning":
         print("y_test shape:", y_test.shape)
         print("y_pred shape:", y_pred.shape)
 
-        # Check for NaN or infinite values in predictions and actual values
         if np.any(np.isnan(y_pred)) or np.any(np.isnan(y_test)):
             print("NaN values found in predictions or test data.")
         if not np.isfinite(y_pred).all() or not np.isfinite(y_test).all():
@@ -795,24 +793,32 @@ elif st.session_state.page_selection == "machine_learning":
         try:
             mse = mean_squared_error(y_test, y_pred)
             r2_value = model.score(X_test, y_test)
-            print("Mean Squared Error: {:.4f}".format(mse))
-            print("R-squared: {:.4f}".format(r2_value))
+            st.write("Mean Squared Error: {:.4f}".format(mse))
+            st.write("R-squared: {:.4f}".format(r2_value))
         except ValueError as e:
             print(f"Error in metric calculation: {e}")
 
         # Visualization: Actual vs Predicted
-        plt.figure(figsize=(10, 6))
-        plt.scatter(y_test, y_pred, alpha=0.7, label='Predicted vs Actual')
-    
-        # Add a reference line
-        plt.plot([y_test.min(), y_test.max()], [y_test.min(), y_test.max()], color='red', linestyle='--', label='Perfect Prediction')
-    
-        plt.xlabel('Actual Sales')
-        plt.ylabel('Predicted Sales')
-        plt.title('Actual vs Predicted Global Sales with Regression Line')
-        plt.legend()
-        plt.grid()
-        plt.show()
+        results_df = pd.DataFrame({'Actual': y_test, 'Predicted': y_pred})
+
+        st.write("### Actual vs Predicted Global Sales")
+        st.scatter_chart(results_df)
+
+        perfect_prediction = pd.DataFrame({
+            'Perfect Prediction': [results_df['Actual'].min(), results_df['Actual'].max()],
+            'Perfect Prediction Value': [results_df['Actual'].min(), results_df['Actual'].max()]
+        })
+
+        st.line_chart(perfect_prediction.set_index('Perfect Prediction'), use_container_width=True)
+
+        import plotly.express as px
+
+        fig = px.scatter(results_df, x='Actual', y='Predicted', title='Actual vs Predicted Global Sales')
+        fig.add_scatter(x=[results_df['Actual'].min(), results_df['Actual'].max()],
+                         y=[results_df['Actual'].min(), results_df['Actual'].max()],
+                         mode='lines', name='Perfect Prediction', line=dict(color='red', dash='dash'))
+
+        st.plotly_chart(fig)
 
     linear_regression()
    
