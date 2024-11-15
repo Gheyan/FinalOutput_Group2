@@ -794,7 +794,7 @@ elif st.session_state.page_selection == "machine_learning":
         # Calculate metrics
         try:
             mse = mean_squared_error(y_test, y_pred)
-            r2 = r2_score(y_test, y_pred)
+            r2 = rTwo_score(y_test, y_pred)
             print("Mean Squared Error:", mse)
             print("R-squared:", r2)
         except ValueError as e:
